@@ -18,21 +18,22 @@ function DemoMutation() {
   const addBouteille = () => {
     console.log({
       variables: {
-        millesime,
+        
       },
     });
     addBouteilleDb({
       variables: {
-        millesime,
+        
       },
     });
   };
   return (
     <div>
-      <input onChange={handleChange} />
+      Hello
+      {/* <input onChange={handleChange} />
       <button disabled={millesime.length === 0} onClick={addBouteille}>
         Ajouter le livre
-      </button>
+      </button> */}
     </div>
   );
 }

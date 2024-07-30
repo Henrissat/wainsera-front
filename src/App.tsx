@@ -1,36 +1,21 @@
-import React from "react";
-import "./App.css";
-import { useQuery } from "@apollo/client";
+import React from 'react';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Header from './components/header/Header';
+import Home from './components/Home';
+import WineDetails from './components/WineDetails';
 
-import DemoLazyQuery from "./components/DemoLazyQuery";
-import DemoMutation from "./components/DemoMutation";
-import { useWainseraQuery } from "./generated";
-import { LIST_BOUTEILLE } from "./graphql/queries/bouteille.query";
-
-interface IBouteille {
-  id: number;
-  millesime?: number;
-  alcool?: number;
-  quantite?: number;
-}
-function App() {
-  // const { loading, error, data } = useWainseraQuery();
-  const { loading, error, data } = useQuery(LIST_BOUTEILLE);
-
+const App: React.FC = () => {
   return (
     <div className="App">
-      {loading ? (
-        <p>Chargement en cours</p>
-      ) : (
-        data?.bouteilles?.map((b : IBouteille, index: number) => (
-          <p key={index}>{b?.millesime}</p>
-        ))
-      )}
-
-      <DemoLazyQuery />
-      <DemoMutation/>
+      <BrowserRouter>
+        <Header />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/wine/:id" element={<WineDetails />} />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
-}
+};
 
 export default App;
