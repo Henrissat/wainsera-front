@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Header from './components/header/Header';
 import Home from './components/Home';
 import WineDetails from './components/WineDetails';
+import './App.css';
 
 const App: React.FC = () => {
   return (

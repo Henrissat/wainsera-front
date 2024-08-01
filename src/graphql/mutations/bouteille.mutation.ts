@@ -59,7 +59,7 @@ export const UPDATE_BOUTEILLE = gql`
 `;
 
 export const DELETE_BOUTEILLE = gql`
-    mutation DeleteBouteille($id: Int!) {
+    mutation DeleteBouteille($id: Float!) {
         deleteBouteille(id: $id)
     }
 `

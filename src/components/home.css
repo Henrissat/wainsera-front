@@ -1,0 +1,103 @@
+.container-list {
+  width: 1290px;
+  padding: 20px;
+}
+
+h2 {
+  font-size: 50px;
+}
+
+h3{
+  font-size: 30px;
+  font-weight: 500;
+}
+
+h2, h3 {
+  margin-top: 20px;
+}
+
+.add-button{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: blueviolet;
+  color: #fff;
+  border: 1px solid rgb(78, 10, 78);
+  border-radius: 10px;
+  margin: 20px;
+  padding: 10px;
+  font-size: 20px;
+}
+
+ul {
+  list-style-type: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+li {
+
+  border-bottom: 1px solid #ddd;
+  /* white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; */
+}
+
+.row-wine {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr) 50px; 
+  grid-gap: 20px;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+}
+
+.header-row {
+  display: grid; 
+  grid-template-columns: repeat(5, 1fr) 50px;
+  grid-gap: 20px;
+  font-weight: bold;
+}
+
+.row-wine div,
+.header-row div {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.delete-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+button {
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  margin: 0;
+  padding: 0;
+}
+
+button:hover {
+    color: blueviolet;
+}
+
+@media (max-width: 1200px) {
+  .row-wine {
+    grid-template-columns: repeat(3, 1fr); 
+  }
+}
+
+@media (max-width: 800px) {
+  .row-wine {
+    grid-template-columns: repeat(2, 1fr); 
+  }
+}
+
+@media (max-width: 600px) {
+  .row-wine {
+    grid-template-columns: 1fr; 
+  }
+}
