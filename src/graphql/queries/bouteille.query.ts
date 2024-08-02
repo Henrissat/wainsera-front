@@ -42,18 +42,19 @@ query GetBouteilleById($getBouteilleByIdId: Float!) {
       nom_domaine
     }
     vin {
+      id
       couleur
     }
     cepages {
+      id
       nom_cepage
     }
     region {
+      id
       nom_region
-      pays {
-        nom_pays
-      }
     }
     casier {
+      id
       name
       colonne
       rangee
