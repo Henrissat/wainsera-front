@@ -31,28 +31,26 @@ export const ADD_BOUTEILLE = gql`
 `
 
 export const UPDATE_BOUTEILLE = gql`
-  mutation UpdateBouteille($id: Int!, $bouteille: IAddBouteille!) {
-    updateBouteille(id: $id, bouteille: $bouteille) {
-      alcool
-      cepages {
-        nom_cepage
-      }
+  mutation UpdateBouteille($bouteille: IUpdateBouteille!) {
+    updateBouteille(bouteille: $bouteille) {
+      id
       cuvee {
         nom_domaine
+        id
+      }
+      cepages {
+        nom_cepage
+        id
       }
       millesime
       quantite
-      vin {
-        id
-        couleur
-      }
       region {
         id
         nom_region
-        pays {
-          id
-          nom_pays
-        }
+      }
+      vin {
+        id
+        couleur
       }
     }
   }

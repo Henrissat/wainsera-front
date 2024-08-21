@@ -36,6 +36,7 @@ interface IVin {
 }
 
 interface IFormInput {
+  id: number;
   millesime: number;
   alcool: number;
   quantite: number;

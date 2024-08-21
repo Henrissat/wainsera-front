@@ -7,14 +7,19 @@ import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
 import './home.css';
 import AddBouteilleForm from "./utils/FormAddWine";
 import UpdateBouteilleForm from "./utils/FormUpdateWine";
-import { DELETE_BOUTEILLE } from "../graphql/mutations/bouteille.mutation";
+import { DELETE_BOUTEILLE, UPDATE_BOUTEILLE } from "../graphql/mutations/bouteille.mutation";
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import Button from '@mui/material/Button';
 
 interface ICepage {
-  nom_cepage: string;
+  nom_cepage?: string;
 }
 
 interface IRegion {
-  nom_region: string;
+  nom_region?: string;
 }
 
 interface ICuvee {
@@ -38,7 +43,9 @@ interface IBouteille {
 function Home() {
   const { loading, error, data, refetch } = useQuery(LIST_BOUTEILLE);
   const [deleteBouteille] = useMutation(DELETE_BOUTEILLE);
+  const [updateBouteille] = useMutation(UPDATE_BOUTEILLE);
   const [selectedBouteille, setSelectedBouteille] = useState<number | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const { data: bouteilleData } = useQuery(GET_BOUTEILLE, {
     variables: { getBouteilleByIdId: selectedBouteille || 0 },
     skip: selectedBouteille === null,
@@ -46,6 +53,12 @@ function Home() {
 
   const handleUpdate = (id: number) => {
     setSelectedBouteille(id);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedBouteille(null);
   };
 
   const handleDelete = async (id: number) => {
@@ -58,19 +71,35 @@ function Home() {
   };
 
   const handleFormSubmit = async (formData: any) => {
-    console.log("Données soumises pour mise à jour :", formData);
-    setSelectedBouteille(null); // Ferme le formulaire après la soumission
-    refetch(); // Rafraîchit la liste des bouteilles
-  };
+    if (!selectedBouteille) return;
 
-  const handleCloseForm = () => {
-    setSelectedBouteille(null);
+    const variables = {
+      bouteille: {
+        id: selectedBouteille,
+        millesime: formData.millesime ? parseInt(formData.millesime, 10) : null,
+        alcool: formData.alcool ? parseFloat(formData.alcool) : null,
+        quantite: formData.quantite ? parseInt(formData.quantite, 10) : null,
+        vinId: formData.vinId ? parseInt(formData.vinId, 10) : null,
+        regionId: formData.regionId ? parseInt(formData.regionId, 10) : null,
+        cepageIds: formData.cepageIds ? formData.cepageIds.map((id: string) => parseInt(id, 10)) : [],
+        cuveeNom: formData.cuveeNom || null
+      }
+    };
+
+    console.log("Variables envoyées à la mutation :", variables);
+
+    try {
+      await updateBouteille({ variables });
+      refetch();
+      handleCloseModal();
+    } catch (e) {
+      console.error("Erreur lors de la mise à jour de la bouteille :", e);
+    }
   };
 
   if (loading) return <div>Chargement en cours...</div>;
   if (error) return <div>Une erreur s'est produite: {error.message}</div>;
 
-  // Regrouper les bouteilles par couleur de vin, puis par région
   const groupedByColorAndRegion: { [color: string]: { [region: string]: IBouteille[] } } = {};
 
   data.bouteilles.forEach((b: IBouteille) => {
@@ -143,13 +172,21 @@ function Home() {
           </div>
         ))}
       </div>
-      {selectedBouteille && bouteilleData && bouteilleData.getBouteilleById && (
-        <UpdateBouteilleForm
-          bouteille={bouteilleData.getBouteilleById}
-          onSubmit={handleFormSubmit}
-          onClose={handleCloseForm}
-        />
-      )}
+      <Dialog open={isModalOpen} onClose={handleCloseModal}>
+        <DialogTitle>Modifier la Bouteille</DialogTitle>
+        <DialogContent>
+          {selectedBouteille && bouteilleData && bouteilleData.getBouteilleById && (
+            <UpdateBouteilleForm
+              bouteille={bouteilleData.getBouteilleById}
+              onSubmit={handleFormSubmit}
+              onClose={handleCloseModal}
+            />
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseModal}>Annuler</Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }
