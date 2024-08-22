@@ -13,6 +13,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
+import { toast } from "react-toastify";
 
 interface ICepage {
   nom_cepage?: string;
@@ -62,10 +63,16 @@ function Home() {
   };
 
   const handleDelete = async (id: number) => {
+    const confirmation = window.confirm("Etes-vous sur de vouloir supprimer cette bouteille ?");
+
+    if(!confirmation) return;
+    
     try {
       await deleteBouteille({ variables: { id } });
       refetch();
+      toast.success("Bouteille supprimée avec succès !"); 
     } catch (e) {
+      toast.error("Erreur lors de la suppression de la bouteille."); 
       console.error("Erreur lors de la suppression de la bouteille :", e);
     }
   };
@@ -91,9 +98,11 @@ function Home() {
     try {
       await updateBouteille({ variables });
       refetch();
+      toast.success("Bouteille mise à jour avec succès !"); 
       handleCloseModal();
     } catch (e) {
       console.error("Erreur lors de la mise à jour de la bouteille :", e);
+      toast.error("Erreur lors de la mise à jour de la bouteille."); 
     }
   };
 
@@ -115,9 +124,15 @@ function Home() {
     groupedByColorAndRegion[color][region].push(b);
   });
 
+  const handleRowClick = (id: number) => {
+    // Actions lorsque la ligne est cliquée (par exemple, navigation ou sélection)
+    console.log(`Ligne cliquée avec l'ID: ${id}`);
+  };
+  
+
   return (
     <>
-      <h1>Bouteilles</h1>
+      <h1>Ma cave à vin</h1>
       <AddBouteilleForm />
       <div className="container-list">
         {Object.keys(groupedByColorAndRegion).map((color) => (
@@ -137,7 +152,10 @@ function Home() {
                   </li>
                   {groupedByColorAndRegion[color][region].map((b) => (
                     <li key={b.id}>
-                      <div className="row-wine">
+                      <div
+                        className="row-wine clickable-row"
+                        onClick={() => handleRowClick(b.id)}
+                      >
                         <div>{b.cuvee?.nom_domaine || "Non spécifié"}</div>
                         <div>{b.millesime || "Non spécifié"}</div>
                         <div>{b.alcool ? `${b.alcool}%` : "Non spécifié"}</div>
@@ -158,21 +176,26 @@ function Home() {
                           </button>
                           <button
                             className="update-button"
-                            onClick={() => handleUpdate(b.id)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              e.preventDefault();
+                              handleUpdate(b.id);
+                            }}
                           >
-                            <span><CreateOutlinedIcon/></span>
+                            <CreateOutlinedIcon />
                           </button>
                         </div>
                       </div>
                     </li>
                   ))}
                 </ul>
+
               </div>
             ))}
           </div>
         ))}
       </div>
-      <Dialog open={isModalOpen} onClose={handleCloseModal}>
+      <Dialog open={isModalOpen} onClose={handleCloseModal} className="custom-modal">
         <DialogTitle>Modifier la Bouteille</DialogTitle>
         <DialogContent>
           {selectedBouteille && bouteilleData && bouteilleData.getBouteilleById && (

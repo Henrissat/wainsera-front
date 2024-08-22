@@ -168,7 +168,7 @@ function AddBouteilleForm() {
         </div>
       </div>
       <button type="submit" className="add-button">
-        <AddCircleOutlineIcon />Enregistrer 
+        <AddCircleOutlineIcon /> <span style={{marginLeft: "5px"}}>Ajouter le vin</span>
       </button>
       {loading && <p>Ajout en cours...</p>}
       {error && <p>Erreur: {error.message}</p>}

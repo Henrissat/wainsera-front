@@ -5,6 +5,7 @@ import { useQuery } from "@apollo/client";
 import { LIST_VIN } from "../../graphql/queries/vin.query";
 import { LIST_CEPAGE } from "../../graphql/queries/cepage.query";
 import { LIST_REGION } from "../../graphql/queries/region.query";
+import './FormUpdateWine.css';
 
 interface OptionType {
   value: number;
@@ -115,70 +116,77 @@ const UpdateBouteilleForm: React.FC<IUpdateBouteilleFormProps> = ({ bouteille, o
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <div>
-        <label>Millesime</label>
-        <input type="number" {...register("millesime")} />
+      <div className="form-group">
+        <div>
+          <label>Nom du domaine </label>
+          <input {...register("cuveeNom")} type="text"className="input" style={{minWidth: "300px"}}/>
+        </div>
+        <div>
+          <label>Millesime </label>
+          <input {...register("millesime")} type="number" className="input" style={{maxWidth: "90px"}}/>
+        </div>
+        <div>
+          <label>Alcool </label>
+          <input type="number" {...register("alcool")} step="0.1" className="input" style={{maxWidth: "50px"}}/>
+          <span>°</span>
+        </div>
+        <div>
+          <label>Quantité</label>
+          <input type="number" {...register("quantite")} className="input" style={{maxWidth: "50px"}}/>
+        </div>
       </div>
-      <div>
-        <label>Alcool</label>
-        <input type="number" {...register("alcool")} />
+      <div className="form-group group-type">
+        <div>
+          <label>Vin </label>
+          <Controller
+            name="vinId"
+            control={control}
+            render={({ field }) => (
+              <Select
+                {...field}
+                options={vinOptions}
+                value={vinOptions.find(option => option.value === field.value) || null}
+                onChange={(selectedOption) => field.onChange(selectedOption ? selectedOption.value : '')}
+              />
+            )}
+          />
+        </div>
+        <div>
+          <label>Région </label>
+          <Controller
+            name="regionId"
+            control={control}
+            render={({ field }) => (
+              <Select
+                {...field}
+                options={regionOptions}
+                value={regionOptions.find(option => option.value === field.value) || null}
+                onChange={(selectedOption) => field.onChange(selectedOption ? selectedOption.value : '')}
+              />
+            )}
+          />
+        </div>
+        <div>
+          <label>Cépages </label>
+          <Controller
+            name="cepageIds"
+            control={control}
+            render={({ field }) => (
+              <Select
+                {...field}
+                isMulti
+                options={cepageOptions}
+                value={cepageOptions.filter(option => field.value.includes(option.value))}
+                onChange={(selectedOptions) => field.onChange(selectedOptions.map(option => option.value))}
+              />
+            )}
+          />
+        </div>
       </div>
-      <div>
-        <label>Quantité</label>
-        <input type="number" {...register("quantite")} />
+      <div style={{display:'flex'}}>
+        <button type="submit" className="add-button">Mettre à jour</button>
+        <button type="button" onClick={onClose} className="cancel-button">Annuler</button>
       </div>
-      <div>
-        <label>Vin</label>
-        <Controller
-          name="vinId"
-          control={control}
-          render={({ field }) => (
-            <Select
-              {...field}
-              options={vinOptions}
-              value={vinOptions.find(option => option.value === field.value) || null}
-              onChange={(selectedOption) => field.onChange(selectedOption ? selectedOption.value : '')}
-            />
-          )}
-        />
-      </div>
-      <div>
-        <label>Région</label>
-        <Controller
-          name="regionId"
-          control={control}
-          render={({ field }) => (
-            <Select
-              {...field}
-              options={regionOptions}
-              value={regionOptions.find(option => option.value === field.value) || null}
-              onChange={(selectedOption) => field.onChange(selectedOption ? selectedOption.value : '')}
-            />
-          )}
-        />
-      </div>
-      <div>
-        <label>Cépages</label>
-        <Controller
-          name="cepageIds"
-          control={control}
-          render={({ field }) => (
-            <Select
-              {...field}
-              isMulti
-              options={cepageOptions}
-              value={cepageOptions.filter(option => field.value.includes(option.value))}
-              onChange={(selectedOptions) => field.onChange(selectedOptions.map(option => option.value))}
-            />
-          )}
-        />
-      </div>
-      <div>
-        <label>Nom du cuvée</label>
-        <input type="text" {...register("cuveeNom")} />
-      </div>
-      <button type="submit">Mettre à jour</button>
-      <button type="button" onClick={onClose}>Annuler</button>
     </form>
   );
 };
