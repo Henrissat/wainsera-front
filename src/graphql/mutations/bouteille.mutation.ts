@@ -13,6 +13,11 @@ export const ADD_BOUTEILLE = gql`
             }
             millesime
             quantite
+            note
+            note_perso
+            bouche
+            accord
+            garde_apogee
             vin {
                 id
                 couleur
@@ -44,6 +49,11 @@ export const UPDATE_BOUTEILLE = gql`
       }
       millesime
       quantite
+      note
+      note_perso
+      bouche
+      accord
+      garde_apogee
       region {
         id
         nom_region

@@ -5,6 +5,8 @@ export const LIST_REGION = gql`
     regions {
       id
       nom_region
+      min_garde
+      max_garde
       pays {
         id
         nom_pays
@@ -18,6 +20,8 @@ export const GET_REGION = gql`
     region(id: $id) {
       id
       nom_region
+      min_garde
+      max_garde
       pays {
         id
         nom_pays

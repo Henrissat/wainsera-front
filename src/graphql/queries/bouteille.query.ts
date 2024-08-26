@@ -7,6 +7,11 @@ export const LIST_BOUTEILLE = gql`
       millesime
       alcool
       quantite
+      note
+      note_perso
+      bouche
+      accord
+      garde_apogee
       cuvee {
         nom_domaine
       }
@@ -18,6 +23,8 @@ export const LIST_BOUTEILLE = gql`
       }
       region {
         nom_region
+        min_garde
+        max_garde
         pays {
           nom_pays
         }
@@ -38,6 +45,11 @@ query GetBouteilleById($getBouteilleByIdId: Float!) {
     millesime
     alcool
     quantite
+    note
+    note_perso
+    bouche
+    accord
+    garde_apogee
     cuvee {
       nom_domaine
     }
@@ -52,6 +64,8 @@ query GetBouteilleById($getBouteilleByIdId: Float!) {
     region {
       id
       nom_region
+      min_garde
+      max_garde
     }
     casier {
       id

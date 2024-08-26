@@ -41,6 +41,10 @@ interface IBouteille {
   millesime?: number;
   alcool?: number;
   quantite?: number;
+  note?: number;
+  note_perso?: number;
+  bouche?: string;
+  accord?: string;
   vin: {
     id: number;
     couleur: string;
@@ -72,6 +76,10 @@ const UpdateBouteilleForm: React.FC<IUpdateBouteilleFormProps> = ({ bouteille, o
       millesime: bouteille.millesime ?? '',
       alcool: bouteille.alcool ?? '',
       quantite: bouteille.quantite ?? '',
+      note: bouteille.note ?? '',
+      note_perso: bouteille.note_perso ?? '',
+      bouche: bouteille.bouche ?? '',
+      accord: bouteille.accord ?? '',
       cepageIds: bouteille.cepages ? bouteille.cepages.map(cepage => cepage.id) : [],
       vinId: bouteille.vin?.id ?? '',
       regionId: bouteille.region?.id ?? '',
@@ -183,9 +191,29 @@ const UpdateBouteilleForm: React.FC<IUpdateBouteilleFormProps> = ({ bouteille, o
           />
         </div>
       </div>
+      <div className="form-group">
+        <div>
+          <label>Note </label>
+          <input {...register("note")} type="number" className="input" style={{minWidth: "30px"}}/>
+        </div>
+        <div>
+          <label>Note perso </label>
+          <input {...register("note_perso")} type="number" className="input" style={{minWidth: "30px"}}/>
+        </div>
+      </div>
+      <div className="form-group">
+        <div>
+          <label>Bouche </label>
+          <input {...register("bouche")} type="text" className="input" style={{minWidth: "300px"}}/>
+        </div>
+        <div>
+          <label>Accord </label>
+          <input {...register("accord")} type="text" className="input" style={{minWidth: "300px"}}/>
+        </div>
+      </div>
       <div style={{display:'flex'}}>
         <button type="submit" className="add-button">Mettre à jour</button>
-        <button type="button" onClick={onClose} className="cancel-button">Annuler</button>
+        {/* <button type="button" onClick={onClose} className="cancel-button">Annuler</button> */}
       </div>
     </form>
   );

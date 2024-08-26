@@ -40,6 +40,10 @@ interface IFormInput {
   millesime: number;
   alcool: number;
   quantite: number;
+  note?: number;
+  note_perso?: number;
+  bouche?: string;
+  accord?: string;
   cepageIds: number[];
   vinId: number;
   regionId: number;
@@ -62,6 +66,10 @@ function AddBouteilleForm() {
             millesime: formData.millesime ? Number(formData.millesime) : null,
             alcool: formData.alcool ? Number(formData.alcool) : null,
             quantite: formData.quantite ? Number(formData.quantite) : null,
+            note : formData.note ? Number(formData.note) : null,
+            note_perso : formData.note_perso ? Number(formData.note_perso) : null,
+            bouche : formData.bouche,
+            accord : formData.accord,
             cepageIds: formData.cepageIds ? formData.cepageIds.map(id => Number(id)) : [],
             vinId: formData.vinId ? Number(formData.vinId) : null,
             regionId: formData.regionId ? Number(formData.regionId) : null,
@@ -97,6 +105,8 @@ function AddBouteilleForm() {
           <label>Nom du Domaine </label>
           <input {...register("cuveeNom", { required: true })} type="text" className="input" style={{minWidth: "300px"}}/>
         </div>
+      </div>
+      <div className="form-group">
         <div>
           <label>Millésime </label>
           <input {...register("millesime", { required: true })} type="number" className="input" style={{maxWidth: "90px"}}/>
@@ -109,8 +119,6 @@ function AddBouteilleForm() {
           <label>Quantité </label>
           <input {...register("quantite", { required: true })} type="number" className="input" style={{maxWidth: "50px"}}/>
         </div>
-      </div>
-      <div className="form-group group-type">
         <div>
           <label>Type de vin </label>
           <Controller
@@ -128,6 +136,8 @@ function AddBouteilleForm() {
             )}
           />
         </div>
+      </div>
+      <div className="form-group group-type">
         <div>
           <label>Cépages</label>
           <Controller
@@ -166,6 +176,31 @@ function AddBouteilleForm() {
             )}
           />
         </div>
+      </div>
+      <div className="separator_horiztontal"></div>
+      <div className="form-group">
+        <div>
+          <label>Note </label>
+          <input {...register("note")} type="number" className="input" style={{maxWidth: "90px"}}/>
+        </div>
+        <div>
+          <label>Note perso </label>
+          <input {...register("note_perso")} type="number" className="input" style={{maxWidth: "90px"}}/>
+        </div>
+      </div>
+      <div className="form-group">
+        <div>
+          <label>Bouche </label>
+          <input {...register("bouche")} type="text" className="input" style={{minWidth: "300px"}}/>
+        </div>
+        <div>
+          <label>Accord </label>
+          <input {...register("accord")} type="text" className="input" style={{minWidth: "300px"}}/>
+        </div>
+      </div>
+      <div className="separator_horiztontal"></div>
+      <div className="form-group">
+        
       </div>
       <button type="submit" className="add-button">
         <AddCircleOutlineIcon /> <span style={{marginLeft: "5px"}}>Ajouter le vin</span>

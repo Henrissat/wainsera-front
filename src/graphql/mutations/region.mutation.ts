@@ -5,6 +5,8 @@ export const ADD_REGION = gql`
     addRegion(region: $region) {
       id
       nom_region
+      min_garde
+      max_garde
       pays {
         id
         nom_pays
@@ -18,6 +20,8 @@ export const UPDATE_REGION = gql`
     updateRegion(id: $id, region: $region) {
       id
       nom_region
+      min_garde
+      max_garde
       pays {
         id
         nom_pays

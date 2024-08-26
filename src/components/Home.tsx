@@ -21,6 +21,8 @@ interface ICepage {
 
 interface IRegion {
   nom_region?: string;
+  min_garde?: number;
+  max_garde? : number;
 }
 
 interface ICuvee {
@@ -32,6 +34,11 @@ interface IBouteille {
   millesime?: number;
   alcool?: number;
   quantite?: number;
+  note?:number;
+  note_perso?:number;
+  bouche?: string;
+  accord?: string;
+  garde_apogee?: number;
   vin: {
     couleur: string;
   };
@@ -86,6 +93,10 @@ function Home() {
         millesime: formData.millesime ? parseInt(formData.millesime, 10) : null,
         alcool: formData.alcool ? parseFloat(formData.alcool) : null,
         quantite: formData.quantite ? parseInt(formData.quantite, 10) : null,
+        note: formData.note ? parseInt(formData.note, 10) : null,
+        note_perso: formData.note_perso ? parseInt(formData.note_perso, 10) : null,
+        bouche: formData.bouche || null,
+        accord: formData.accord || null,
         vinId: formData.vinId ? parseInt(formData.vinId, 10) : null,
         regionId: formData.regionId ? parseInt(formData.regionId, 10) : null,
         cepageIds: formData.cepageIds ? formData.cepageIds.map((id: string) => parseInt(id, 10)) : [],
@@ -114,7 +125,7 @@ function Home() {
   data.bouteilles.forEach((b: IBouteille) => {
     const color = b.vin?.couleur || "Non spécifié";
     const region = b.region?.nom_region || "Non spécifiée";
-
+    
     if (!groupedByColorAndRegion[color]) {
       groupedByColorAndRegion[color] = {};
     }
@@ -143,53 +154,64 @@ function Home() {
                 <h3>{region}</h3>
                 <ul>
                   <li className="row-wine header-row">
-                    <div>Domaine:</div>
-                    <div>Millésime:</div>
-                    <div>Alcool:</div>
-                    <div>Quantité:</div>
-                    <div>Cépages:</div>
+                    <div>Domaine</div>
+                    <div>Millésime</div>
+                    <div>Alcool</div>
+                    <div>Quantité</div>
+                    <div>Note</div>
+                    <div>Apogée</div>
                     <div></div>
                   </li>
-                  {groupedByColorAndRegion[color][region].map((b) => (
-                    <li key={b.id}>
-                      <div
-                        className="row-wine clickable-row"
-                        onClick={() => handleRowClick(b.id)}
-                      >
-                        <div>{b.cuvee?.nom_domaine || "Non spécifié"}</div>
-                        <div>{b.millesime || "Non spécifié"}</div>
-                        <div>{b.alcool ? `${b.alcool}%` : "Non spécifié"}</div>
-                        <div>{b.quantite || "Non spécifiée"}</div>
-                        <div className="list-cepages">
-                          {b.cepages?.map((cepage) => cepage.nom_cepage).join(', ') || "Non spécifié"}
+                  {groupedByColorAndRegion[color][region].map((b) => {
+                    let apogee
+                    if(b.garde_apogee !== null) {
+                      apogee = b.garde_apogee;
+                    }else {
+                      const apogeeMin = b.region?.min_garde || 0;
+                      const apogeeMax = b.region?.max_garde || 0;
+                      const apogeeMoyenne = Math.floor((apogeeMin + apogeeMax) / 2);
+                      apogee = b.millesime ? apogeeMoyenne + b.millesime : null;
+                    }
+                    
+                    return (
+                      <li key={b.id}>
+                        <div
+                          className="row-wine clickable-row"
+                          onClick={() => handleRowClick(b.id)}
+                        >
+                          <div>{b.cuvee?.nom_domaine || "Non spécifié"}</div>
+                          <div>{b.millesime || "Non spécifié"}</div>
+                          <div>{b.alcool ? `${b.alcool}%` : "Non spécifié"}</div>
+                          <div>{b.quantite || "Non spécifiée"}</div>
+                          <div>{b.note ? `${b.note}/5` : "?"}</div>
+                          <div>{apogee}</div> 
+                          <div>
+                            <button
+                              className="delete-button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                e.preventDefault();
+                                handleDelete(b.id);
+                              }}
+                            >
+                              <DeleteOutlineIcon />
+                            </button>
+                            <button
+                              className="update-button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                e.preventDefault();
+                                handleUpdate(b.id);
+                              }}
+                            >
+                              <CreateOutlinedIcon />
+                            </button>
+                          </div>
                         </div>
-                        <div>
-                          <button
-                            className="delete-button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              e.preventDefault();
-                              handleDelete(b.id);
-                            }}
-                          >
-                            <DeleteOutlineIcon />
-                          </button>
-                          <button
-                            className="update-button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              e.preventDefault();
-                              handleUpdate(b.id);
-                            }}
-                          >
-                            <CreateOutlinedIcon />
-                          </button>
-                        </div>
-                      </div>
-                    </li>
-                  ))}
+                      </li>
+                    );
+                  })}
                 </ul>
-
               </div>
             ))}
           </div>
