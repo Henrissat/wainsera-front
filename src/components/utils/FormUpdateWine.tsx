@@ -5,6 +5,8 @@ import { useQuery } from "@apollo/client";
 import { LIST_VIN } from "../../graphql/queries/vin.query";
 import { LIST_CEPAGE } from "../../graphql/queries/cepage.query";
 import { LIST_REGION } from "../../graphql/queries/region.query";
+import { LIST_CASIER } from "../../graphql/queries/casier.query";
+
 import './FormUpdateWine.css';
 
 interface OptionType {
@@ -24,6 +26,13 @@ interface IRegion {
 interface IVin {
   id: number;
   couleur: string;
+}
+
+interface ICasier {
+  id: number;
+  name?: string;
+  rangee?: number;
+  colonne?: number;
 }
 
 interface ICepage {
@@ -52,6 +61,8 @@ interface IBouteille {
   cuvee?: ICuvee;
   cepages?: ICepage[];
   region?: IRegion;
+  casierId?: ICasier;
+  casier?: ICasier;
 }
 
 interface IUpdateBouteilleFormProps {
@@ -60,16 +71,19 @@ interface IUpdateBouteilleFormProps {
   onClose: () => void;
 }
 
-const UpdateBouteilleForm: React.FC<IUpdateBouteilleFormProps> = ({ bouteille, onSubmit, onClose }) => {
+const UpdateBouteilleForm: React.FC<IUpdateBouteilleFormProps> = ({ bouteille, onSubmit }) => {
   const [vinOptions, setVinOptions] = useState<OptionType[]>([]);
   const [regionOptions, setRegionOptions] = useState<OptionType[]>([]);
   const [cepageOptions, setCepageOptions] = useState<OptionType[]>([]);
+  const [casierOptions, setCasierOptions] = useState<OptionType[]>([]);
 
   const { data: vinData } = useQuery<{ vins: IVin[] }>(LIST_VIN);
   const { data: cepageData } = useQuery<{ cepages: ICepage[] }>(LIST_CEPAGE);
   const { data: regionData } = useQuery<{ regions: IRegion[] }>(LIST_REGION);
+  const { data: casierData } = useQuery<{ casiers: ICasier[] }>(LIST_CASIER);
 
   console.log(bouteille);
+
   
   const { register, handleSubmit, control, setValue } = useForm({
     defaultValues: {
@@ -83,19 +97,37 @@ const UpdateBouteilleForm: React.FC<IUpdateBouteilleFormProps> = ({ bouteille, o
       cepageIds: bouteille.cepages ? bouteille.cepages.map(cepage => cepage.id) : [],
       vinId: bouteille.vin?.id ?? '',
       regionId: bouteille.region?.id ?? '',
-      cuveeNom: bouteille.cuvee?.nom_domaine ?? ''
+      cuveeNom: bouteille.cuvee?.nom_domaine ?? '',
+      casierId: bouteille.casierId?.id ?? ''     
+
     }
   });
 
   useEffect(() => {
+
+    if (casierData && casierData.casiers) {
+      const casierOptions = casierData.casiers.map(casiers => ({
+        value: casiers.id,
+        label: `${casiers.name} - Rangee ${casiers.rangee} - Colonne ${casiers.colonne}`
+      }));
+      setCasierOptions(casierOptions);
+    } else {
+      console.error("casierData.casiers is undefined");
+    }
+
+
     if (vinData) {
       const vins = vinData.vins.map(vin => ({ value: vin.id, label: vin.couleur }));
       setVinOptions(vins);
+    } else {
+      console.error("casierData.casier is undefined");
     }
 
     if (cepageData) {
       const cepages = cepageData.cepages.map(cepage => ({ value: cepage.id, label: cepage.nom_cepage }));
       setCepageOptions(cepages);
+    } else {
+      console.error("cepageData.cepages is undefined");
     }
 
     if (regionData) {
@@ -105,6 +137,12 @@ const UpdateBouteilleForm: React.FC<IUpdateBouteilleFormProps> = ({ bouteille, o
       }));
       setRegionOptions(regions);
     }
+
+    if (bouteille.casier) {
+      setValue("casierId", bouteille.casier.id);
+    }
+
+    console.log("casierid", bouteille.casier?.id);
 
     if (bouteille.cepages) {
       const cepageIds = bouteille.cepages.map(cepage => cepage.id);
@@ -120,15 +158,18 @@ const UpdateBouteilleForm: React.FC<IUpdateBouteilleFormProps> = ({ bouteille, o
     }
 
     setValue("cuveeNom", bouteille.cuvee?.nom_domaine ?? '');
-  }, [bouteille, vinData, cepageData, regionData, setValue]);
+  }, [bouteille, vinData, cepageData, regionData, casierData, setValue]);
+  
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form className="formAUpdateWine" onSubmit={handleSubmit(onSubmit)}>
       <div className="form-group">
         <div>
           <label>Nom du domaine </label>
           <input {...register("cuveeNom")} type="text"className="input" style={{minWidth: "300px"}}/>
         </div>
+      </div>
+      <div className="form-group">
         <div>
           <label>Millesime </label>
           <input {...register("millesime")} type="number" className="input" style={{maxWidth: "90px"}}/>
@@ -142,9 +183,7 @@ const UpdateBouteilleForm: React.FC<IUpdateBouteilleFormProps> = ({ bouteille, o
           <label>Quantité</label>
           <input type="number" {...register("quantite")} className="input" style={{maxWidth: "50px"}}/>
         </div>
-      </div>
-      <div className="form-group group-type">
-        <div>
+        <div className="label-flex">
           <label>Vin </label>
           <Controller
             name="vinId"
@@ -159,7 +198,9 @@ const UpdateBouteilleForm: React.FC<IUpdateBouteilleFormProps> = ({ bouteille, o
             )}
           />
         </div>
-        <div>
+      </div>
+      <div className="form-group">
+        <div className="label-flex">
           <label>Région </label>
           <Controller
             name="regionId"
@@ -174,7 +215,7 @@ const UpdateBouteilleForm: React.FC<IUpdateBouteilleFormProps> = ({ bouteille, o
             )}
           />
         </div>
-        <div>
+        <div className="label-flex">
           <label>Cépages </label>
           <Controller
             name="cepageIds"
@@ -191,14 +232,15 @@ const UpdateBouteilleForm: React.FC<IUpdateBouteilleFormProps> = ({ bouteille, o
           />
         </div>
       </div>
+      <div className="separator-horizontal"></div>
       <div className="form-group">
         <div>
           <label>Note </label>
-          <input {...register("note")} type="number" className="input" style={{minWidth: "30px"}}/>
+          <input {...register("note")} step="0.1" type="number" className="input" style={{minWidth: "30px"}}/>
         </div>
         <div>
           <label>Note perso </label>
-          <input {...register("note_perso")} type="number" className="input" style={{minWidth: "30px"}}/>
+          <input {...register("note_perso")} step="0.1" type="number" className="input" style={{minWidth: "30px"}}/>
         </div>
       </div>
       <div className="form-group">
@@ -211,6 +253,25 @@ const UpdateBouteilleForm: React.FC<IUpdateBouteilleFormProps> = ({ bouteille, o
           <input {...register("accord")} type="text" className="input" style={{minWidth: "300px"}}/>
         </div>
       </div>
+      <div className="separator-horizontal"></div>
+      <div className="form-group">
+        <div className="label-flex">
+          <label>Rangement</label>
+          <Controller
+  name="casierId"
+  control={control}
+  render={({ field }) => (
+    <Select
+      {...field}
+      options={casierOptions}
+      value={casierOptions.find(option => option.value === field.value) || null}
+      onChange={(selectedOption) => field.onChange(selectedOption ? selectedOption.value : '')}
+    />
+  )}
+/>
+        </div>
+      </div>
+      <div className="separator-horizontal"></div>
       <div style={{display:'flex'}}>
         <button type="submit" className="add-button">Mettre à jour</button>
         {/* <button type="button" onClick={onClose} className="cancel-button">Annuler</button> */}

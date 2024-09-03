@@ -30,6 +30,12 @@ export const ADD_BOUTEILLE = gql`
                 nom_pays
                 }
             }
+            casier {
+              name
+              colonne
+              rangee
+              id
+            }
         }
     }
   
@@ -61,6 +67,12 @@ export const UPDATE_BOUTEILLE = gql`
       vin {
         id
         couleur
+      }
+      casier {
+        name
+        colonne
+        rangee
+        id
       }
     }
   }

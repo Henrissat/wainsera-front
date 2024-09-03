@@ -7,6 +7,7 @@ import { ADD_BOUTEILLE } from "../../graphql/mutations/bouteille.mutation";
 import { LIST_VIN } from "../../graphql/queries/vin.query";
 import { LIST_CEPAGE } from "../../graphql/queries/cepage.query";
 import { LIST_REGION } from "../../graphql/queries/region.query";
+import { LIST_CASIER } from "../../graphql/queries/casier.query";
 import './FormAddWine.css';
 
 
@@ -35,6 +36,18 @@ interface IVin {
   couleur: string;
 }
 
+interface ICasier {
+  id: number;
+  name?: string;
+  rangee?: number;
+  colonne?: number;
+}
+
+interface OptionType {
+  value: number;
+  label: string; // Assurez-vous que label est toujours une chaîne de caractères
+}
+
 interface IFormInput {
   id: number;
   millesime: number;
@@ -45,9 +58,10 @@ interface IFormInput {
   bouche?: string;
   accord?: string;
   cepageIds: number[];
-  vinId: number;
-  regionId: number;
+  vinId?: number;
+  regionId?: number;
   cuveeNom: string;
+  casierId?: number;
 }
 
 function AddBouteilleForm() {
@@ -57,6 +71,9 @@ function AddBouteilleForm() {
   const { data: vinData } = useQuery<{ vins: IVin[] }>(LIST_VIN);
   const { data: cepageData } = useQuery<{ cepages: ICepage[] }>(LIST_CEPAGE);
   const { data: regionData } = useQuery<{ regions: IRegion[] }>(LIST_REGION);
+  const { data: casierData } = useQuery<{ casiers: ICasier[] }>(LIST_CASIER);
+
+  console.log(casierData)
 
   const onSubmit: SubmitHandler<IFormInput> = async (formData) => {
     try {
@@ -74,6 +91,7 @@ function AddBouteilleForm() {
             vinId: formData.vinId ? Number(formData.vinId) : null,
             regionId: formData.regionId ? Number(formData.regionId) : null,
             cuveeNom: formData.cuveeNom,
+            casierId: formData.casierId ? Number(formData.casierId) : null     
           }
         }
       });
@@ -98,8 +116,14 @@ function AddBouteilleForm() {
     label: `${region.nom_region} - ${region.pays.nom_pays}`
   })) || [];
 
+  const casierOptions: OptionType[] = casierData?.casiers.map(casier => ({
+    value: casier.id,
+    label: `${casier.name} - Rangee ${casier.rangee} - Colonne ${casier.colonne}` || "Nom inconnu" // Fournit une valeur par défaut si casier.name est undefined
+  })) || [];
+
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form className="formAddWine" onSubmit={handleSubmit(onSubmit)}>
       <div className="form-group">
         <div>
           <label>Nom du Domaine </label>
@@ -119,7 +143,7 @@ function AddBouteilleForm() {
           <label>Quantité </label>
           <input {...register("quantite", { required: true })} type="number" className="input" style={{maxWidth: "50px"}}/>
         </div>
-        <div>
+        <div className="label-flex">
           <label>Type de vin </label>
           <Controller
             name="vinId"
@@ -137,8 +161,8 @@ function AddBouteilleForm() {
           />
         </div>
       </div>
-      <div className="form-group group-type">
-        <div>
+      <div className="form-group">
+        <div className="label-flex">
           <label>Cépages</label>
           <Controller
             name="cepageIds"
@@ -159,7 +183,7 @@ function AddBouteilleForm() {
             )}
           />
         </div>
-        <div>
+        <div className="label-flex">
           <label>Région - Pays</label>
           <Controller
             name="regionId"
@@ -177,15 +201,15 @@ function AddBouteilleForm() {
           />
         </div>
       </div>
-      <div className="separator_horiztontal"></div>
+      <div className="separator-horizontal"></div>
       <div className="form-group">
         <div>
           <label>Note </label>
-          <input {...register("note")} type="number" className="input" style={{maxWidth: "90px"}}/>
+          <input {...register("note")} type="number" step="0.1" className="input" style={{maxWidth: "90px"}}/>
         </div>
         <div>
           <label>Note perso </label>
-          <input {...register("note_perso")} type="number" className="input" style={{maxWidth: "90px"}}/>
+          <input {...register("note_perso")} type="number" step="0.1" className="input" style={{maxWidth: "90px"}}/>
         </div>
       </div>
       <div className="form-group">
@@ -198,9 +222,25 @@ function AddBouteilleForm() {
           <input {...register("accord")} type="text" className="input" style={{minWidth: "300px"}}/>
         </div>
       </div>
-      <div className="separator_horiztontal"></div>
+      <div className="separator-horizontal"></div>
       <div className="form-group">
-        
+        <div className="label-flex">
+          <label>Rangement</label>
+          <Controller
+            name="casierId"
+            control={control}
+            render={({ field }) => (
+              <Select
+                options={casierOptions}
+                className="region-select"
+                onChange={(option: OptionType | null) => {
+                  field.onChange(option ? option.value : null);
+                }}
+                value={casierOptions.find(option => option.value === field.value)}
+              />
+            )}
+          />
+        </div>
       </div>
       <button type="submit" className="add-button">
         <AddCircleOutlineIcon /> <span style={{marginLeft: "5px"}}>Ajouter le vin</span>

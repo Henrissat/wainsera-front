@@ -46,6 +46,11 @@ interface IBouteille {
   
   cepages: ICepage[];
   region?: IRegion;
+  casier?: {
+    name?: string;
+    rangee?: number;
+    colonne?: number;
+  }
 }
 
 function Home() {
@@ -100,11 +105,12 @@ function Home() {
         vinId: formData.vinId ? parseInt(formData.vinId, 10) : null,
         regionId: formData.regionId ? parseInt(formData.regionId, 10) : null,
         cepageIds: formData.cepageIds ? formData.cepageIds.map((id: string) => parseInt(id, 10)) : [],
-        cuveeNom: formData.cuveeNom || null
+        cuveeNom: formData.cuveeNom || null,
+        casierId: formData.casierId ? parseInt(formData.casierId, 10) : null
       }
     };
 
-    console.log("Variables envoyées à la mutation :", variables);
+    console.log("Form Data:", formData);
 
     try {
       await updateBouteille({ variables });
@@ -152,6 +158,7 @@ function Home() {
             {Object.keys(groupedByColorAndRegion[color]).map((region) => (
               <div key={region}>
                 <h3>{region}</h3>
+                <div className="separator_horizontal"></div>
                 <ul>
                   <li className="row-wine header-row">
                     <div>Domaine</div>

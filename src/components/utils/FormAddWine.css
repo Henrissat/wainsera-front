@@ -1,5 +1,5 @@
 
-form{
+.formAddWine{
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -15,6 +15,7 @@ form{
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     margin : 20px 0;
 }
+
 .input{
     height: 35px;
     border: 1px solid #ccc;
@@ -36,11 +37,4 @@ form{
 
 .group-type > div:first-child{
     max-width: 200px;
-}
-
-.separator_horiztontal{
-    width: 100%;
-    height: 1px;
-    background-color: #ccc;
-    margin: 30px 0;
 }
