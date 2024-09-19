@@ -2,10 +2,11 @@ import React from 'react';
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import Header from './components/header/Header';
 import Home from './components/Home';
-import Login from './pages/page-authentification/Login';
+import Login from './pages/page-authentification/login';
 import WineDetails from './components/WineDetails';
 import LoginProvider from './context/LoginProvider';
 import './App.css';
+import Register from './pages/page-authentification/register';
 
 
 const ProtectedRoute = ({ element }: { element: JSX.Element }) => {
@@ -26,7 +27,7 @@ const App: React.FC = () => {
           <Header />
           <Routes>
             <Route path="/login" element={<Login />} />
-
+            <Route path="/register" element={<Register />} />
             <Route
               path="/"
               element={<ProtectedRoute element={<Home />} />}
@@ -35,7 +36,6 @@ const App: React.FC = () => {
               path="/wine/:id"
               element={<ProtectedRoute element={<WineDetails />} />}
             />
-
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </BrowserRouter>

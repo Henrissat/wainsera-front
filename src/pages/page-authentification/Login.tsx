@@ -1,4 +1,5 @@
 import { useLazyQuery } from '@apollo/client';
+import { Link } from "react-router-dom";
 import { useState, useEffect } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
@@ -118,6 +119,10 @@ function Login() {
           </button>
         </div>
       </form>
+      <div className=''>
+        <span>Je n'ai pas encore de compte </span>
+        <span><Link to="/register"> S’inscrire</Link></span>
+      </div>
     </div>
   );
 }
