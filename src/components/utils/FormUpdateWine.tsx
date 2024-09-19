@@ -62,7 +62,7 @@ interface IBouteille {
   cepages?: ICepage[];
   region?: IRegion;
   casierId?: ICasier;
-  casier?: ICasier;
+  casier?: ICasier;              
 }
 
 interface IUpdateBouteilleFormProps {

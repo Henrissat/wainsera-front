@@ -1,0 +1,16 @@
+{
+  "authentification": {
+    "loginSuccess": "Connexion réussi, vous allez être redirigé sur la page principal",
+    "registerSuccess": "Votre compte a bien été crée, vous allez être redirigé pour vous connecter",
+    "err": "Une erreur est survenue"
+  },
+  "profile": {
+    "profileUpdateSuccess": "Profile modifié avec succès",
+    "profileUpdateError": "Une erreur est survenue lors de la modification du profile"
+  },
+  "order": {
+    "createOrderSuccess": "Votre réservation est prise en compte",
+    "createOrderError": "Une erreur s'est produite, votre réservation n'a pas pu être crée",
+    "addToCartSuccess": "Article ajouté au panier"
+  }
+}
