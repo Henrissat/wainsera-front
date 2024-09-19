@@ -3,11 +3,8 @@ import { gql } from "@apollo/client";
 export const LIST_USER = gql`
     query ListUsers {
         listUsers {
-        fullname
-        email
-        bouteilles {
-            id
-        }
+          fullname
+          email
         }
     }
 `;
@@ -15,14 +12,10 @@ export const LIST_USER = gql`
 export const GET_USER = gql`
     query GetUserById($getUserByIdId: ID!) {
         getUserById(id: $getUserByIdId) {
-        id
-        fullname
-        fullname
-        email
-        password
-        bouteilles {
-            id
-        }
+          id
+          fullname
+          email
+          password
         }
     }
 `;
@@ -32,6 +25,7 @@ export const LOGIN = gql`
   query Login($input: ILoginInput!) {
     login(input: $input) {
       user {
+        id
         email
         fullname
       }

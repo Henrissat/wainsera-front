@@ -28,7 +28,6 @@ function Login() {
     onCompleted(data) {
       toast(authentification.loginSuccess, {
         onClose() {
-          console.log("Login successful, redirecting...");
           setUserLog(data.login);
         },
         onOpen() {

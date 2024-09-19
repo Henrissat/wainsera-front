@@ -14,6 +14,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 import { toast } from "react-toastify";
+import { useLogin } from "../context/LoginProvider";
 
 interface ICepage {
   nom_cepage?: string;
@@ -51,9 +52,17 @@ interface IBouteille {
     rangee?: number;
     colonne?: number;
   }
+  user: {
+    id: string
+  }
 }
 
 function Home() {
+
+  const { userLog } = useLogin();  
+  const userId = userLog?.user.id;  
+  console.log("login user", userLog);
+
   const { loading, error, data, refetch } = useQuery(LIST_BOUTEILLE);
   const [deleteBouteille] = useMutation(DELETE_BOUTEILLE);
   const [updateBouteille] = useMutation(UPDATE_BOUTEILLE);
@@ -63,6 +72,8 @@ function Home() {
     variables: { getBouteilleByIdId: selectedBouteille || 0 },
     skip: selectedBouteille === null,
   });
+
+  const filteredBouteilles = data?.bouteilles.filter((b: IBouteille) => b.user.id === userId) || [];
 
   const handleUpdate = (id: number) => {
     setSelectedBouteille(id);
@@ -106,7 +117,8 @@ function Home() {
         regionId: formData.regionId ? parseInt(formData.regionId, 10) : null,
         cepageIds: formData.cepageIds ? formData.cepageIds.map((id: string) => parseInt(id, 10)) : [],
         cuveeNom: formData.cuveeNom || null,
-        casierId: formData.casierId ? parseInt(formData.casierId, 10) : null
+        casierId: formData.casierId ? parseInt(formData.casierId, 10) : null,
+        userId: formData.userId? parseInt(formData.userId, 10) : null
       }
     };
 
@@ -128,7 +140,7 @@ function Home() {
 
   const groupedByColorAndRegion: { [color: string]: { [region: string]: IBouteille[] } } = {};
 
-  data.bouteilles.forEach((b: IBouteille) => {
+  filteredBouteilles.forEach((b: IBouteille) => {
     const color = b.vin?.couleur || "Non spécifié";
     const region = b.region?.nom_region || "Non spécifiée";
     

@@ -6,7 +6,7 @@ interface LoginInterface {
 }
 interface UserInfoInterface {
   email: String;
-  firstname: String;
+  fullname: String;
   id: String;
 }
 

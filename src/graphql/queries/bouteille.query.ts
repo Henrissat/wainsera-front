@@ -34,6 +34,9 @@ export const LIST_BOUTEILLE = gql`
         rangee
         colonne
       }
+      user {
+        id
+      }
     }
   }
 `;
@@ -72,6 +75,9 @@ query GetBouteilleById($getBouteilleByIdId: Float!) {
       name
       colonne
       rangee
+    }
+    user {
+      id
     }
   }
 }

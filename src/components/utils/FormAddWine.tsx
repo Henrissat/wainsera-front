@@ -73,8 +73,6 @@ function AddBouteilleForm() {
   const { data: regionData } = useQuery<{ regions: IRegion[] }>(LIST_REGION);
   const { data: casierData } = useQuery<{ casiers: ICasier[] }>(LIST_CASIER);
 
-  console.log(casierData)
-
   const onSubmit: SubmitHandler<IFormInput> = async (formData) => {
     try {
       await addBouteille({
