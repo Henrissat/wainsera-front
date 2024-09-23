@@ -2,7 +2,7 @@
   "name": "client",
   "version": "0.1.0",
   "private": true,
-  "proxy" : "https://git.heroku.com/wainsera.git/api/",
+  "proxy": "https://git.heroku.com/wainsera.git/api/",
   "dependencies": {
     "@apollo/client": "^3.7.12",
     "@emotion/react": "^11.13.3",
@@ -56,6 +56,7 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@graphql-codegen/cli": "3.3.0",
     "@graphql-codegen/client-preset": "3.0.0",
     "@graphql-codegen/introspection": "2.1.1",

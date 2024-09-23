@@ -16,9 +16,17 @@ const Header = () => {
   const { userLog, setUserLog } = useLogin();
   const [currentUser, setCurrentUser] = useState<IUser | null>(null);
   // const { clearCart } = useContext(WineContext);
+  console.log(currentUser)
 
   const {} = useQuery(GET_USER, {
     variables: { userId: userLog?.user.id },
+/*************  ✨ Codeium Command ⭐  *************/
+  /**
+   * Called when the query is completed.
+   * If the user is found, set the currentUser state with the found user.
+   * @param {Object} data the result of the query
+   */
+/******  6b3283cb-60a9-4777-8de1-af33bf516c40  *******/
     onCompleted(data) {
       if (data.user) {
         console.log("user", data.user);
