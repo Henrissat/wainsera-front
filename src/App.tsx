@@ -4,12 +4,9 @@ import Header from './components/header/Header';
 import Home from './components/Home';
 import WineDetails from './components/WineDetails';
 import LoginProvider from './context/LoginProvider';
-import Login from './pages/page-authentification/Login';
-import Register from './pages/page-authentification/register';
 import './App.css';
-
-
-
+import Login from './pages/page-authentification/Login';
+import Register from './pages/page-authentification/Register';
 
 const ProtectedRoute = ({ element }: { element: JSX.Element }) => {
   const user = JSON.parse(`${localStorage.getItem("userLog")}`);
