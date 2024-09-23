@@ -1,10 +1,31 @@
-.container-list {
-  width: 1290px;
-  /* padding: 20px; */
+h1{
+  margin: 3rem 0 0 0 !important;
+}
+
+h2 {
+  margin: 3rem 0 0 0;
+  padding: 0;
+}
+h3{
+  margin: 15px 0 0 0;
+  padding: 0;
 }
 
 
-.add-button{
+.container-list {
+  max-width: 1290px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px;
+  overflow-x: hidden;
+}
+
+.list{
+  overflow-x: hidden;
+}
+
+.add-button,
+.cancel-button {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -19,72 +40,55 @@
   transition: all 0.3s ease;
 }
 
-.add-button:hover{
+.add-button:hover,
+.cancel-button:hover {
   background-color: rgb(78, 10, 78);
   color: #fff;
 }
 
-.cancel-button{
-  display: flex;
-  justify-content: center;
-  align-items: center;  
-  background-color: rgb(73, 68, 71);
-  color: #fff;
-  border: 1px solid rgb(63, 62, 63);
-  border-radius: 10px;
-  margin: 20px;
-  padding: 10px;
-  font-size: 18px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.cancel-button:hover{
-  background-color: rgb(109, 103, 109);
-  color: #fff;
-}
 
 ul {
   list-style-type: none;
   padding-left: 0;
   margin: 0;
+  overflow-x: hidden;
 }
 
 li {
   border-bottom: 1px solid rgb(245, 245, 245);
-  /* white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis; */
 }
 
-li div > :not(:first-child) {
-  color: rgb(119, 119, 119);
-}
-li div > :not(:first-child):hover {
-  color: blueviolet;
-}
 
 .row-wine {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr) 50px; 
-  grid-gap: 20px;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  text-decoration: none;
-  color: inherit;
+  padding: 7px 0;
+  gap: 20px;
 }
 
 .header-row {
-  display: grid; 
-  grid-template-columns: repeat(6, 1fr) 50px;
-  grid-gap: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   font-weight: bold;
+  padding: 10px 0;
+  background-color: rgb(247, 243, 243);
 }
+
 
 .row-wine div,
 .header-row div {
+  flex: 1 1 150px; 
+  min-width: 100px; 
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  text-overflow: ellipsis; 
+  white-space: nowrap; 
+}
+
+
+.row-wine div:last-child, .header-row div:last-child {
+  flex: 0 0 50px; 
 }
 
 .clickable-row {
@@ -92,7 +96,7 @@ li div > :not(:first-child):hover {
   transition: background-color 0.2s;
 }
 
-.clickable-row:hover{
+.clickable-row:hover {
   color: blueviolet;
 }
 
@@ -111,8 +115,9 @@ button {
 }
 
 button:hover {
-    color: blueviolet;
+  color: blueviolet;
 }
+
 
 .css-1t1j96h-MuiPaper-root-MuiDialog-paper {
   width: 70% !important;
@@ -121,14 +126,14 @@ button:hover {
   min-height: 450px !important;
 }
 
-.separator-horizontal{
+.separator-horizontal {
   width: 100%;
   height: 1px;
   background-color: #ccc;
   margin: 20px 0;
 }
 
-.label-flex{
+.label-flex {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
@@ -138,24 +143,45 @@ button:hover {
   margin-right: 10px; 
 }
 
-.region-select{
+.region-select {
   min-width: 250px;
 }
 
+
 @media (max-width: 1200px) {
-  .row-wine {
-    grid-template-columns: repeat(3, 1fr); 
+  .row-wine div,
+  .header-row div {
+    flex: 1 1 120px; 
   }
 }
 
 @media (max-width: 800px) {
-  .row-wine {
-    grid-template-columns: repeat(2, 1fr); 
+  .row-wine div,
+  .header-row div {
+    flex: 1 1 80px; 
+  }
+
+  .sml-disabled{
+    display: none;
   }
 }
 
 @media (max-width: 600px) {
-  .row-wine {
-    grid-template-columns: 1fr; 
+
+  h1{
+    font-size: 65px !important;
+  }
+
+  .row-wine div,
+  .header-row div {
+    flex: 1 1 80px; 
+  }
+
+  .row-wine div:last-child, .header-row div:last-child {
+    flex: 0 0 40px;
+  }
+
+  .xsml-disabled{
+    display: none;
   }
 }

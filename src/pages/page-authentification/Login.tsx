@@ -8,6 +8,7 @@ import { LOGIN } from '../../graphql/queries/user.query';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
 import useNotification from '../../notifications/useNotification';
+import './login.css';
 
 interface FormValues {
   email: string;
@@ -73,10 +74,11 @@ function Login() {
         />
       </div>
 
-      <form className="my-5" onSubmit={handleSubmit(onSubmit)}>
-        <div className="d-flex flex-column align-items-center text-center">
-          <label className="d-flex flex-column" htmlFor="email">
-            Mail
+      <form className="form-container" onSubmit={handleSubmit(onSubmit)}>
+        <h3>Login</h3>
+        <div className="form-content">
+          <label className="" htmlFor="email">
+            Mail 
             <input
               style={{ width: '30rem' }}
               className="form-control"
@@ -87,8 +89,8 @@ function Login() {
               {...register('email', { required: true })}            
             />
           </label>
-          <label className="mt-5" htmlFor="password">
-            Mot de passe
+          <label className="" htmlFor="password">
+            Mot de passe 
             <input
               style={{ width: '30rem' }}
               className="form-control"
@@ -105,9 +107,9 @@ function Login() {
           {' '}
           {err ? 'Les informations fournies ne sont pas correctes' : ''}{' '}
         </p>
-        <div className="d-flex justify-content-center">
+        <div className="">
           <button
-            className="btn btn-primary btn-sm mt-4"
+            className="btn-connexion"
             type="submit"
             disabled={waiting || loading}
           >
@@ -119,7 +121,7 @@ function Login() {
           </button>
         </div>
       </form>
-      <div className=''>
+      <div className='register'>
         <span>Je n'ai pas encore de compte </span>
         <span><Link to="/register"> S’inscrire</Link></span>
       </div>

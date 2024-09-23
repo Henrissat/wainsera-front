@@ -36,13 +36,13 @@ const Header = () => {
   return (
     <>
       <div className="nav-container">
-        <a href="/">
+        <a href="/" className="logo">
           <img
             className="m-3 logo-w"
-            alt="logo-wainsera"
+            alt="Wainsera"
           />
         </a>
-        <nav >
+        <nav>
             <ul className="navbar">
                 <li className="nav-item">
                   <Link className="nav-link" to="/">

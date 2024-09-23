@@ -2,6 +2,7 @@
   "name": "client",
   "version": "0.1.0",
   "private": true,
+  "proxy" : "https://git.heroku.com/wainsera.git/api/",
   "dependencies": {
     "@apollo/client": "^3.7.12",
     "@emotion/react": "^11.13.3",

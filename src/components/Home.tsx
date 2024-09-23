@@ -67,6 +67,7 @@ function Home() {
   const [deleteBouteille] = useMutation(DELETE_BOUTEILLE);
   const [updateBouteille] = useMutation(UPDATE_BOUTEILLE);
   const [selectedBouteille, setSelectedBouteille] = useState<number | null>(null);
+  const [isAddFormVisible, setIsAddFormVisible] = useState<boolean>(false); 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const { data: bouteilleData } = useQuery(GET_BOUTEILLE, {
     variables: { getBouteilleByIdId: selectedBouteille || 0 },
@@ -162,10 +163,19 @@ function Home() {
   return (
     <>
       <h1>Ma cave à vin</h1>
-      <AddBouteilleForm />
+
+      <Button
+        onClick={() => setIsAddFormVisible(!isAddFormVisible)} 
+        startIcon={<AddCircleOutlineIcon />}
+      >
+        {isAddFormVisible ? "Fermer le formulaire d'ajout" : "Ajouter une bouteille"}
+      </Button>
+
+      {isAddFormVisible && <AddBouteilleForm />}
+
       <div className="container-list">
         {Object.keys(groupedByColorAndRegion).map((color) => (
-          <div key={color}>
+          <div key={color} className="list">
             <h2>{color}</h2>
             {Object.keys(groupedByColorAndRegion[color]).map((region) => (
               <div key={region}>
@@ -175,10 +185,10 @@ function Home() {
                   <li className="row-wine header-row">
                     <div>Domaine</div>
                     <div>Millésime</div>
-                    <div>Alcool</div>
+                    <div className="sml-disabled">Alcool</div>
                     <div>Quantité</div>
-                    <div>Note</div>
-                    <div>Apogée</div>
+                    <div className="sml-disabled">Note</div>
+                    <div className="xsml-disabled">Apogée</div>
                     <div></div>
                   </li>
                   {groupedByColorAndRegion[color][region].map((b) => {
@@ -200,10 +210,10 @@ function Home() {
                         >
                           <div>{b.cuvee?.nom_domaine || "Non spécifié"}</div>
                           <div>{b.millesime || "Non spécifié"}</div>
-                          <div>{b.alcool ? `${b.alcool}%` : "Non spécifié"}</div>
+                          <div className="sml-disabled">{b.alcool ? `${b.alcool}%` : "Non spécifié"}</div>
                           <div>{b.quantite || "Non spécifiée"}</div>
-                          <div>{b.note ? `${b.note}/5` : "?"}</div>
-                          <div>{apogee}</div> 
+                          <div className="sml-disabled">{b.note ? `${b.note}/5` : "?"}</div>
+                          <div className="xsml-disabled">{apogee}</div> 
                           <div>
                             <button
                               className="delete-button"
