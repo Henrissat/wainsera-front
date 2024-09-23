@@ -25,16 +25,16 @@ const App: React.FC = () => {
         <BrowserRouter>
           <Header />
           <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+            <Route path="/Login" element={<Login />} />
+            <Route path="/Register" element={<Register />} />
             <Route
               path="/"
               element={<ProtectedRoute element={<Home />} />}
             />
-            <Route
-              path="/wine/:id"
+            {/* <Route
+              path="/Wine/:id"
               element={<ProtectedRoute element={<WineDetails />} />}
-            />
+            /> */}
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </BrowserRouter>
