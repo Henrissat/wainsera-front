@@ -9,6 +9,7 @@ import { LIST_CEPAGE } from "../../graphql/queries/cepage.query";
 import { LIST_REGION } from "../../graphql/queries/region.query";
 import { LIST_CASIER } from "../../graphql/queries/casier.query";
 import './FormAddWine.css';
+import { useLogin } from "../../context/LoginProvider";
 
 
 // Définition des types pour les options
@@ -64,9 +65,15 @@ interface IFormInput {
   casierId?: number;
 }
 
-function AddBouteilleForm() {
+interface AddBouteilleFormProps {
+  onSuccess: () => void;
+}
+
+function AddBouteilleForm({ onSuccess }: AddBouteilleFormProps) {
   const { register, handleSubmit, control, reset } = useForm<IFormInput>();
   const [addBouteille, { data, loading, error }] = useMutation(ADD_BOUTEILLE);
+  const { userLog } = useLogin();  
+  const userId = userLog?.user.id;  
 
   const { data: vinData } = useQuery<{ vins: IVin[] }>(LIST_VIN);
   const { data: cepageData } = useQuery<{ cepages: ICepage[] }>(LIST_CEPAGE);
@@ -74,26 +81,31 @@ function AddBouteilleForm() {
   const { data: casierData } = useQuery<{ casiers: ICasier[] }>(LIST_CASIER);
 
   const onSubmit: SubmitHandler<IFormInput> = async (formData) => {
+    console.log(formData);
+    const bouteilleData = {
+      millesime: formData.millesime ? Number(formData.millesime) : null,
+      alcool: formData.alcool ? Number(formData.alcool) : null,
+      quantite: formData.quantite ? Number(formData.quantite) : null,
+      note: formData.note ? Number(formData.note) : null,
+      note_perso: formData.note_perso ? Number(formData.note_perso) : null,
+      bouche: formData.bouche,
+      accord: formData.accord,
+      cepageIds: formData.cepageIds ? formData.cepageIds.map(id => Number(id)) : [],
+      vinId: formData.vinId ? Number(formData.vinId) : null,
+      regionId: formData.regionId ? Number(formData.regionId) : null,
+      cuveeNom: formData.cuveeNom,
+      casierId: formData.casierId ? Number(formData.casierId) : null,
+      userId: userId
+    };
+  console.log(bouteilleData)
     try {
       await addBouteille({
         variables: {
-          bouteille: {
-            millesime: formData.millesime ? Number(formData.millesime) : null,
-            alcool: formData.alcool ? Number(formData.alcool) : null,
-            quantite: formData.quantite ? Number(formData.quantite) : null,
-            note : formData.note ? Number(formData.note) : null,
-            note_perso : formData.note_perso ? Number(formData.note_perso) : null,
-            bouche : formData.bouche,
-            accord : formData.accord,
-            cepageIds: formData.cepageIds ? formData.cepageIds.map(id => Number(id)) : [],
-            vinId: formData.vinId ? Number(formData.vinId) : null,
-            regionId: formData.regionId ? Number(formData.regionId) : null,
-            cuveeNom: formData.cuveeNom,
-            casierId: formData.casierId ? Number(formData.casierId) : null     
-          }
+          bouteille: bouteilleData
         }
       });
       reset();
+      onSuccess(); 
     } catch (e) {
       console.error("Erreur lors de l'ajout de la bouteille :", e);
     }

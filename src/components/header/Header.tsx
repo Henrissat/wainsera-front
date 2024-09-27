@@ -17,15 +17,17 @@ const Header = () => {
   const [currentUser, setCurrentUser] = useState<IUser | null>(null);
   // const { clearCart } = useContext(WineContext);
 
-  const {} = useQuery(GET_USER, {
-    variables: { userId: userLog?.user.id },
+  const { data, loading, error } = useQuery(GET_USER, {
+    variables: { getUserByIdId: userLog?.user.id },
+    skip: !userLog?.user.id, 
     onCompleted(data) {
-      if (data.user) {
-        console.log("user", data.user);
-        setCurrentUser(data.user);
+      if (data.getUserById) {
+        console.log("user", data.getUserById);
+        setCurrentUser(data.getUserById);
       }
     },
   });
+  
 
   const handleDeleteLocalStorage = () => {
     // clearCart();

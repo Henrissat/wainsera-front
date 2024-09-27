@@ -23,7 +23,7 @@ interface ICepage {
 interface IRegion {
   nom_region?: string;
   min_garde?: number;
-  max_garde? : number;
+  max_garde?: number;
 }
 
 interface ICuvee {
@@ -35,8 +35,8 @@ interface IBouteille {
   millesime?: number;
   alcool?: number;
   quantite?: number;
-  note?:number;
-  note_perso?:number;
+  note?: number;
+  note_perso?: number;
   bouche?: string;
   accord?: string;
   garde_apogee?: number;
@@ -44,30 +44,27 @@ interface IBouteille {
     couleur: string;
   };
   cuvee?: ICuvee;
-  
   cepages: ICepage[];
   region?: IRegion;
   casier?: {
     name?: string;
     rangee?: number;
     colonne?: number;
-  }
+  };
   user: {
-    id: string
-  }
+    id: string;
+  };
 }
 
 function Home() {
-
-  const { userLog } = useLogin();  
-  const userId = userLog?.user.id;  
-  console.log("login user", userLog);
-
+  const { userLog } = useLogin();
+  const userId = userLog?.user.id;
+  
   const { loading, error, data, refetch } = useQuery(LIST_BOUTEILLE);
   const [deleteBouteille] = useMutation(DELETE_BOUTEILLE);
   const [updateBouteille] = useMutation(UPDATE_BOUTEILLE);
   const [selectedBouteille, setSelectedBouteille] = useState<number | null>(null);
-  const [isAddFormVisible, setIsAddFormVisible] = useState<boolean>(false); 
+  const [isAddFormVisible, setIsAddFormVisible] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const { data: bouteilleData } = useQuery(GET_BOUTEILLE, {
     variables: { getBouteilleByIdId: selectedBouteille || 0 },
@@ -87,16 +84,16 @@ function Home() {
   };
 
   const handleDelete = async (id: number) => {
-    const confirmation = window.confirm("Etes-vous sur de vouloir supprimer cette bouteille ?");
+    const confirmation = window.confirm("Etes-vous sûr de vouloir supprimer cette bouteille ?");
 
-    if(!confirmation) return;
-    
+    if (!confirmation) return;
+
     try {
       await deleteBouteille({ variables: { id } });
-      refetch();
-      toast.success("Bouteille supprimée avec succès !"); 
+      refetch(); // Actualiser la liste après suppression
+      toast.success("Bouteille supprimée avec succès !");
     } catch (e) {
-      toast.error("Erreur lors de la suppression de la bouteille."); 
+      toast.error("Erreur lors de la suppression de la bouteille.");
       console.error("Erreur lors de la suppression de la bouteille :", e);
     }
   };
@@ -119,20 +116,18 @@ function Home() {
         cepageIds: formData.cepageIds ? formData.cepageIds.map((id: string) => parseInt(id, 10)) : [],
         cuveeNom: formData.cuveeNom || null,
         casierId: formData.casierId ? parseInt(formData.casierId, 10) : null,
-        userId: formData.userId? parseInt(formData.userId, 10) : null
-      }
+        userId: userId,
+      },
     };
-
-    console.log("Form Data:", formData);
 
     try {
       await updateBouteille({ variables });
-      refetch();
-      toast.success("Bouteille mise à jour avec succès !"); 
+      refetch(); // Actualiser la liste après mise à jour
+      toast.success("Bouteille mise à jour avec succès !");
       handleCloseModal();
     } catch (e) {
       console.error("Erreur lors de la mise à jour de la bouteille :", e);
-      toast.error("Erreur lors de la mise à jour de la bouteille."); 
+      toast.error("Erreur lors de la mise à jour de la bouteille.");
     }
   };
 
@@ -144,7 +139,7 @@ function Home() {
   filteredBouteilles.forEach((b: IBouteille) => {
     const color = b.vin?.couleur || "Non spécifié";
     const region = b.region?.nom_region || "Non spécifiée";
-    
+
     if (!groupedByColorAndRegion[color]) {
       groupedByColorAndRegion[color] = {};
     }
@@ -155,23 +150,25 @@ function Home() {
   });
 
   const handleRowClick = (id: number) => {
-    // Actions lorsque la ligne est cliquée (par exemple, navigation ou sélection)
     console.log(`Ligne cliquée avec l'ID: ${id}`);
   };
-  
 
   return (
     <>
       <h1>Ma cave à vin</h1>
 
       <Button
-        onClick={() => setIsAddFormVisible(!isAddFormVisible)} 
+        onClick={() => setIsAddFormVisible(!isAddFormVisible)}
         startIcon={<AddCircleOutlineIcon />}
       >
         {isAddFormVisible ? "Fermer le formulaire d'ajout" : "Ajouter une bouteille"}
       </Button>
 
-      {isAddFormVisible && <AddBouteilleForm />}
+      {isAddFormVisible && (
+        <AddBouteilleForm
+          onSuccess={() => refetch()} // Refetch après ajout
+        />
+      )}
 
       <div className="container-list">
         {Object.keys(groupedByColorAndRegion).map((color) => (
@@ -192,16 +189,16 @@ function Home() {
                     <div></div>
                   </li>
                   {groupedByColorAndRegion[color][region].map((b) => {
-                    let apogee
-                    if(b.garde_apogee !== null) {
+                    let apogee;
+                    if (b.garde_apogee !== null) {
                       apogee = b.garde_apogee;
-                    }else {
+                    } else {
                       const apogeeMin = b.region?.min_garde || 0;
                       const apogeeMax = b.region?.max_garde || 0;
                       const apogeeMoyenne = Math.floor((apogeeMin + apogeeMax) / 2);
                       apogee = b.millesime ? apogeeMoyenne + b.millesime : null;
                     }
-                    
+
                     return (
                       <li key={b.id}>
                         <div
@@ -212,29 +209,11 @@ function Home() {
                           <div>{b.millesime || "Non spécifié"}</div>
                           <div className="sml-disabled">{b.alcool ? `${b.alcool}%` : "Non spécifié"}</div>
                           <div>{b.quantite || "Non spécifiée"}</div>
-                          <div className="sml-disabled">{b.note ? `${b.note}/5` : "?"}</div>
-                          <div className="xsml-disabled">{apogee}</div> 
-                          <div>
-                            <button
-                              className="delete-button"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                e.preventDefault();
-                                handleDelete(b.id);
-                              }}
-                            >
-                              <DeleteOutlineIcon />
-                            </button>
-                            <button
-                              className="update-button"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                e.preventDefault();
-                                handleUpdate(b.id);
-                              }}
-                            >
-                              <CreateOutlinedIcon />
-                            </button>
+                          <div className="sml-disabled">{b.note ? `${b.note}/100` : "Non notée"}</div>
+                          <div className="xsml-disabled">{apogee || "Non spécifiée"}</div>
+                          <div className="row-actions">
+                            <DeleteOutlineIcon onClick={() => handleDelete(b.id)} />
+                            <CreateOutlinedIcon onClick={() => handleUpdate(b.id)} />
                           </div>
                         </div>
                       </li>
@@ -246,10 +225,10 @@ function Home() {
           </div>
         ))}
       </div>
-      <Dialog open={isModalOpen} onClose={handleCloseModal} className="custom-modal">
-        <DialogTitle>Modifier la Bouteille</DialogTitle>
+      <Dialog open={isModalOpen} onClose={handleCloseModal} fullWidth maxWidth="md">
+        <DialogTitle>Modifier la bouteille</DialogTitle>
         <DialogContent>
-          {selectedBouteille && bouteilleData && bouteilleData.getBouteilleById && (
+          {bouteilleData && bouteilleData.getBouteilleById && (
             <UpdateBouteilleForm
               bouteille={bouteilleData.getBouteilleById}
               onSubmit={handleFormSubmit}
@@ -258,7 +237,9 @@ function Home() {
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseModal}>Annuler</Button>
+          <Button onClick={handleCloseModal} color="primary">
+            Annuler
+          </Button>
         </DialogActions>
       </Dialog>
     </>

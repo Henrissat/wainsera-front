@@ -36,6 +36,9 @@ export const ADD_BOUTEILLE = gql`
               rangee
               id
             }
+            user {
+              id
+            }
         }
     }
   

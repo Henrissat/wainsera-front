@@ -76,6 +76,9 @@ const UpdateBouteilleForm: React.FC<IUpdateBouteilleFormProps> = ({ bouteille, o
   const [regionOptions, setRegionOptions] = useState<OptionType[]>([]);
   const [cepageOptions, setCepageOptions] = useState<OptionType[]>([]);
   const [casierOptions, setCasierOptions] = useState<OptionType[]>([]);
+  const [success, setSuccess] = useState(false); 
+  const [error, setError] = useState<string | null>(null); 
+  const [loading, setLoading] = useState(false);
 
   const { data: vinData } = useQuery<{ vins: IVin[] }>(LIST_VIN);
   const { data: cepageData } = useQuery<{ cepages: ICepage[] }>(LIST_CEPAGE);
@@ -160,9 +163,23 @@ const UpdateBouteilleForm: React.FC<IUpdateBouteilleFormProps> = ({ bouteille, o
     setValue("cuveeNom", bouteille.cuvee?.nom_domaine ?? '');
   }, [bouteille, vinData, cepageData, regionData, casierData, setValue]);
   
+  const handleFormSubmit = async (formData: any) => {
+    setLoading(true);
+    setError(null);
+    setSuccess(false);
+    
+    try {
+      await onSubmit(formData);
+      setSuccess(true);
+    } catch (e) {
+      setError("Erreur lors de la mise à jour de la bouteille.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <form className="formAUpdateWine" onSubmit={handleSubmit(onSubmit)}>
+    <form className="formAUpdateWine" onSubmit={handleSubmit(handleFormSubmit)}>
       <div className="form-group">
         <div>
           <label>Nom du domaine </label>
@@ -258,17 +275,17 @@ const UpdateBouteilleForm: React.FC<IUpdateBouteilleFormProps> = ({ bouteille, o
         <div className="label-flex">
           <label>Rangement</label>
           <Controller
-  name="casierId"
-  control={control}
-  render={({ field }) => (
-    <Select
-      {...field}
-      options={casierOptions}
-      value={casierOptions.find(option => option.value === field.value) || null}
-      onChange={(selectedOption) => field.onChange(selectedOption ? selectedOption.value : '')}
-    />
-  )}
-/>
+            name="casierId"
+            control={control}
+            render={({ field }) => (
+              <Select
+                {...field}
+                options={casierOptions}
+                value={casierOptions.find(option => option.value === field.value) || null}
+                onChange={(selectedOption) => field.onChange(selectedOption ? selectedOption.value : '')}
+              />
+            )}
+          />
         </div>
       </div>
       <div className="separator-horizontal"></div>

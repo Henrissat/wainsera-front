@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import Header from './components/header/Header';
 import Home from './components/Home';
-import WineDetails from './components/WineDetails';
+// import WineDetails from './components/WineDetails';
 import LoginProvider from './context/LoginProvider';
 import Login from './pages/page-authentification/Login';
 import Register from './pages/page-authentification/register';
@@ -34,10 +34,10 @@ const App: React.FC = () => {
               path="/"
               element={<ProtectedRoute element={<Home />} />}
             />
-            <Route
-              path="/wine/:id"
+            {/* <Route
               element={<ProtectedRoute element={<WineDetails />} />}
-            />
+              path="/Wine/:id"
+            /> */}
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </BrowserRouter>
