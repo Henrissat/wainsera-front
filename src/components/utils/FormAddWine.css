@@ -38,3 +38,7 @@
 .group-type > div:first-child{
     max-width: 200px;
 }
+
+.cepage-select{
+    min-width: 200px;
+}

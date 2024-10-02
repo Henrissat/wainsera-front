@@ -107,8 +107,8 @@ function Home() {
         millesime: formData.millesime ? parseInt(formData.millesime, 10) : null,
         alcool: formData.alcool ? parseFloat(formData.alcool) : null,
         quantite: formData.quantite ? parseInt(formData.quantite, 10) : null,
-        note: formData.note ? parseInt(formData.note, 10) : null,
-        note_perso: formData.note_perso ? parseInt(formData.note_perso, 10) : null,
+        note: formData.note ? parseFloat(formData.note) : null,       
+        note_perso: formData.note_perso ? parseFloat(formData.note_perso) : null,
         bouche: formData.bouche || null,
         accord: formData.accord || null,
         vinId: formData.vinId ? parseInt(formData.vinId, 10) : null,
@@ -153,6 +153,12 @@ function Home() {
     console.log(`Ligne cliquée avec l'ID: ${id}`);
   };
 
+  const handleAddBouteilleSuccess = () => {
+    refetch();
+    setIsAddFormVisible(false);
+    toast.success("Bouteille ajoutée avec succès !");
+  };
+
   return (
     <>
       <h1>Ma cave à vin</h1>
@@ -166,7 +172,7 @@ function Home() {
 
       {isAddFormVisible && (
         <AddBouteilleForm
-          onSuccess={() => refetch()} // Refetch après ajout
+          onSuccess={handleAddBouteilleSuccess}
         />
       )}
 
@@ -181,11 +187,11 @@ function Home() {
                 <ul>
                   <li className="row-wine header-row">
                     <div>Domaine</div>
-                    <div>Millésime</div>
-                    <div className="sml-disabled">Alcool</div>
-                    <div>Quantité</div>
-                    <div className="sml-disabled">Note</div>
-                    <div className="xsml-disabled">Apogée</div>
+                    <div className="sml">Millésime</div>
+                    <div className="sml col-disabled">Alcool</div>
+                    <div className="sml">Quantité</div>
+                    <div className="sml col-disabled">Note</div>
+                    <div className="xsml xcol-disabled">Apogée</div>
                     <div></div>
                   </li>
                   {groupedByColorAndRegion[color][region].map((b) => {
@@ -206,11 +212,11 @@ function Home() {
                           onClick={() => handleRowClick(b.id)}
                         >
                           <div>{b.cuvee?.nom_domaine || "Non spécifié"}</div>
-                          <div>{b.millesime || "Non spécifié"}</div>
-                          <div className="sml-disabled">{b.alcool ? `${b.alcool}%` : "Non spécifié"}</div>
-                          <div>{b.quantite || "Non spécifiée"}</div>
-                          <div className="sml-disabled">{b.note ? `${b.note}/100` : "Non notée"}</div>
-                          <div className="xsml-disabled">{apogee || "Non spécifiée"}</div>
+                          <div className="sml">{b.millesime || "Non spécifié"}</div>
+                          <div className="sml col-disabled">{b.alcool ? `${b.alcool}%` : "Non spécifié"}</div>
+                          <div className="sml">{b.quantite || "Non spécifiée"}</div>
+                          <div className="sml col-disabled">{b.note ? `${b.note}/5` : "Non notée"}</div>
+                          <div className="xsml xcol-disabled">{apogee || "Non spécifiée"}</div>
                           <div className="row-actions">
                             <DeleteOutlineIcon onClick={() => handleDelete(b.id)} />
                             <CreateOutlinedIcon onClick={() => handleUpdate(b.id)} />

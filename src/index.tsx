@@ -7,7 +7,7 @@ import { setContext } from "@apollo/client/link/context";
 import 'react-toastify/dist/ReactToastify.css';
 
 const httpLink = createHttpLink({
-  uri: "https://server-wainsera-fe66a44f5e8e.herokuapp.com/graphql",
+  uri: "https://server-wainsera.up.railway.app/graphql",
   // uri: "http://localhost:8000/graphql",
   credentials: "include",
 });
