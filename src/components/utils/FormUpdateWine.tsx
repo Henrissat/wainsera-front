@@ -76,6 +76,9 @@ const UpdateBouteilleForm: React.FC<IUpdateBouteilleFormProps> = ({ bouteille, o
   const [regionOptions, setRegionOptions] = useState<OptionType[]>([]);
   const [cepageOptions, setCepageOptions] = useState<OptionType[]>([]);
   const [casierOptions, setCasierOptions] = useState<OptionType[]>([]);
+  const [success, setSuccess] = useState(false); 
+  const [error, setError] = useState<string | null>(null); 
+  const [loading, setLoading] = useState(false);
 
   const { data: vinData } = useQuery<{ vins: IVin[] }>(LIST_VIN);
   const { data: cepageData } = useQuery<{ cepages: ICepage[] }>(LIST_CEPAGE);
@@ -160,9 +163,30 @@ const UpdateBouteilleForm: React.FC<IUpdateBouteilleFormProps> = ({ bouteille, o
     setValue("cuveeNom", bouteille.cuvee?.nom_domaine ?? '');
   }, [bouteille, vinData, cepageData, regionData, casierData, setValue]);
   
+  const handleFormSubmit = async (formData: any) => {
+    setLoading(true);
+    setError(null);
+    setSuccess(false);
+
+    const updatedFormData = {
+      ...formData,
+      alcool: typeof formData.alcool === 'string' ? parseFloat(formData.alcool.replace(',', '.')) : formData.alcool,
+      note: typeof formData.note === 'string' ? parseFloat(formData.note.replace(',', '.')) : formData.note,
+      note_perso: typeof formData.note_perso === 'string' ? parseFloat(formData.note_perso.replace(',', '.')) : formData.note_perso,
+    };
+
+    try {
+      await onSubmit(updatedFormData);
+      setSuccess(true);
+    } catch (e) {
+      setError("Erreur lors de la mise à jour de la bouteille.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <form className="formAUpdateWine" onSubmit={handleSubmit(onSubmit)}>
+    <form className="formAUpdateWine" onSubmit={handleSubmit(handleFormSubmit)}>
       <div className="form-group">
         <div>
           <label>Nom du domaine </label>
@@ -176,7 +200,7 @@ const UpdateBouteilleForm: React.FC<IUpdateBouteilleFormProps> = ({ bouteille, o
         </div>
         <div>
           <label>Alcool </label>
-          <input type="number" {...register("alcool")} step="0.1" className="input" style={{maxWidth: "50px"}}/>
+          <input type="number" step="0.1" {...register("alcool")} className="input" style={{maxWidth: "50px"}}/>
           <span>°</span>
         </div>
         <div>
@@ -236,11 +260,11 @@ const UpdateBouteilleForm: React.FC<IUpdateBouteilleFormProps> = ({ bouteille, o
       <div className="form-group">
         <div>
           <label>Note </label>
-          <input {...register("note")} step="0.1" type="number" className="input" style={{minWidth: "30px"}}/>
+          <input {...register("note")}  type="number" step="0.1" className="input" style={{minWidth: "30px"}}/>
         </div>
         <div>
           <label>Note perso </label>
-          <input {...register("note_perso")} step="0.1" type="number" className="input" style={{minWidth: "30px"}}/>
+          <input {...register("note_perso")}  type="number" step="0.1" className="input" style={{minWidth: "30px"}}/>
         </div>
       </div>
       <div className="form-group">
@@ -258,17 +282,17 @@ const UpdateBouteilleForm: React.FC<IUpdateBouteilleFormProps> = ({ bouteille, o
         <div className="label-flex">
           <label>Rangement</label>
           <Controller
-  name="casierId"
-  control={control}
-  render={({ field }) => (
-    <Select
-      {...field}
-      options={casierOptions}
-      value={casierOptions.find(option => option.value === field.value) || null}
-      onChange={(selectedOption) => field.onChange(selectedOption ? selectedOption.value : '')}
-    />
-  )}
-/>
+            name="casierId"
+            control={control}
+            render={({ field }) => (
+              <Select
+                {...field}
+                options={casierOptions}
+                value={casierOptions.find(option => option.value === field.value) || null}
+                onChange={(selectedOption) => field.onChange(selectedOption ? selectedOption.value : '')}
+              />
+            )}
+          />
         </div>
       </div>
       <div className="separator-horizontal"></div>

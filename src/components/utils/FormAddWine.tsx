@@ -8,6 +8,7 @@ import { LIST_CEPAGE } from "../../graphql/queries/cepage.query";
 import { LIST_REGION } from "../../graphql/queries/region.query";
 import { LIST_CASIER } from "../../graphql/queries/casier.query";
 import './FormAddWine.css';
+import { useLogin } from "../../context/LoginProvider";
 
 
 // Définition des types pour les options
@@ -50,10 +51,10 @@ interface OptionType {
 interface IFormInput {
   id: number;
   millesime: number;
-  alcool: number;
+  alcool: string;
   quantite: number;
-  note?: number;
-  note_perso?: number;
+  note?: string;
+  note_perso?: string;
   bouche?: string;
   accord?: string;
   cepageIds: number[];
@@ -63,9 +64,15 @@ interface IFormInput {
   casierId?: number;
 }
 
-function AddBouteilleForm() {
+interface AddBouteilleFormProps {
+  onSuccess: () => void;
+}
+
+function AddBouteilleForm({ onSuccess }: AddBouteilleFormProps) {
   const { register, handleSubmit, control, reset } = useForm<IFormInput>();
   const [addBouteille, { data, loading, error }] = useMutation(ADD_BOUTEILLE);
+  const { userLog } = useLogin();  
+  const userId = userLog?.user.id;  
 
   const { data: vinData } = useQuery<{ vins: IVin[] }>(LIST_VIN);
   const { data: cepageData } = useQuery<{ cepages: ICepage[] }>(LIST_CEPAGE);
@@ -73,26 +80,31 @@ function AddBouteilleForm() {
   const { data: casierData } = useQuery<{ casiers: ICasier[] }>(LIST_CASIER);
 
   const onSubmit: SubmitHandler<IFormInput> = async (formData) => {
+    console.log(formData);
+    const bouteilleData = {
+      millesime: formData.millesime ? Number(formData.millesime) : null,
+      alcool: formData.alcool ? parseFloat(formData.alcool.replace(',', '.')) : null,
+      quantite: formData.quantite ? Number(formData.quantite) : null,
+      note: formData.note ? parseFloat(formData.note.replace(',', '.')) : null,
+      note_perso: formData.note_perso ? parseFloat(formData.note_perso.replace(',', '.')) : null,
+      bouche: formData.bouche,
+      accord: formData.accord,
+      cepageIds: formData.cepageIds ? formData.cepageIds.map(id => Number(id)) : [],
+      vinId: formData.vinId ? Number(formData.vinId) : null,
+      regionId: formData.regionId ? Number(formData.regionId) : null,
+      cuveeNom: formData.cuveeNom,
+      casierId: formData.casierId ? Number(formData.casierId) : null,
+      userId: userId
+    };
+  console.log(bouteilleData)
     try {
       await addBouteille({
         variables: {
-          bouteille: {
-            millesime: formData.millesime ? Number(formData.millesime) : null,
-            alcool: formData.alcool ? Number(formData.alcool) : null,
-            quantite: formData.quantite ? Number(formData.quantite) : null,
-            note : formData.note ? Number(formData.note) : null,
-            note_perso : formData.note_perso ? Number(formData.note_perso) : null,
-            bouche : formData.bouche,
-            accord : formData.accord,
-            cepageIds: formData.cepageIds ? formData.cepageIds.map(id => Number(id)) : [],
-            vinId: formData.vinId ? Number(formData.vinId) : null,
-            regionId: formData.regionId ? Number(formData.regionId) : null,
-            cuveeNom: formData.cuveeNom,
-            casierId: formData.casierId ? Number(formData.casierId) : null     
-          }
+          bouteille: bouteilleData
         }
       });
       reset();
+      onSuccess(); 
     } catch (e) {
       console.error("Erreur lors de l'ajout de la bouteille :", e);
     }
@@ -110,7 +122,7 @@ function AddBouteilleForm() {
 
   const regionOptions: OptionType[] = regionData?.regions.map(region => ({
     value: region.id,
-    label: `${region.nom_region} - ${region.pays.nom_pays}`
+    label: `${region.nom_region} - ${region.pays ? region.pays.nom_pays : 'Aucun pays associé'}`
   })) || [];
 
   const casierOptions: OptionType[] = casierData?.casiers.map(casier => ({
@@ -134,7 +146,7 @@ function AddBouteilleForm() {
         </div>
         <div>
           <label>Alcool (%) </label>
-          <input {...register("alcool", { required: true })} type="number" step="0.1" className="input" style={{maxWidth: "50px"}}/>
+          <input {...register("alcool", { required: true })} type="text" className="input" style={{maxWidth: "50px"}}/>
         </div>
         <div>
           <label>Quantité </label>
@@ -200,13 +212,13 @@ function AddBouteilleForm() {
       </div>
       <div className="separator-horizontal"></div>
       <div className="form-group">
-        <div>
+      <div>
           <label>Note </label>
-          <input {...register("note")} type="number" step="0.1" className="input" style={{maxWidth: "90px"}}/>
+          <input {...register("note")} type="text" className="input" style={{maxWidth: "90px"}}/> 
         </div>
         <div>
           <label>Note perso </label>
-          <input {...register("note_perso")} type="number" step="0.1" className="input" style={{maxWidth: "90px"}}/>
+          <input {...register("note_perso")} type="text" className="input" style={{maxWidth: "90px"}}/> 
         </div>
       </div>
       <div className="form-group">

@@ -15,7 +15,6 @@ export const GET_USER = gql`
           id
           fullname
           email
-          password
         }
     }
 `;

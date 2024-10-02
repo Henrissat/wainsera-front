@@ -1,4 +1,3 @@
-import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
@@ -8,7 +7,8 @@ import { setContext } from "@apollo/client/link/context";
 import 'react-toastify/dist/ReactToastify.css';
 
 const httpLink = createHttpLink({
-  uri: "http://localhost:8000/graphql",
+  uri: "https://server-wainsera.up.railway.app/graphql",
+  // uri: "http://localhost:8000/graphql",
   credentials: "include",
 });
 const authLink = setContext((_, { headers }) => {

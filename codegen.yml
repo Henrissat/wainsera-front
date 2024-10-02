@@ -1,5 +1,6 @@
 overwrite: true
 schema: "http://localhost:8000/graphql"
+# schema: "https://server-wainsera-fe66a44f5e8e.herokuapp.com/graphql"
 documents: ["./src/graphql/queries/*.query.ts", "./src/graphql/mutations/*.mutation.ts"]
 generates:
   src/generated.ts:
