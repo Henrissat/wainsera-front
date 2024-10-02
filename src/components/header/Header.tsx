@@ -18,7 +18,7 @@ const Header = () => {
   // const { clearCart } = useContext(WineContext);
   console.log(currentUser)
 
-  const { data, loading, error } = useQuery(GET_USER, {
+  const { loading, error } = useQuery(GET_USER, {
     variables: { getUserByIdId: userLog?.user.id },
     skip: !userLog?.user.id, 
     onCompleted(data) {
@@ -34,7 +34,9 @@ const Header = () => {
     // clearCart();
     setUserLog(null);
   };
-  
+
+  if (loading) return <div>Chargement...</div>;
+  if (error) return <div>Une erreur s'est produite lors du chargement de l'utilisateur.</div>;
 
   return (
     <>

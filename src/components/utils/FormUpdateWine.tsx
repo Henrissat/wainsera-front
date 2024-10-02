@@ -185,6 +185,10 @@ const UpdateBouteilleForm: React.FC<IUpdateBouteilleFormProps> = ({ bouteille, o
     }
   };
 
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error occurred: {error}</p>;
+  if (success) return <p>Wine updated successfully!</p>;
+
   return (
     <form className="formAUpdateWine" onSubmit={handleSubmit(handleFormSubmit)}>
       <div className="form-group">
