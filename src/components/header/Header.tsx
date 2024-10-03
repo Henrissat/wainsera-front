@@ -15,8 +15,7 @@ interface IUser {
 const Header = () => {
   const { userLog, setUserLog } = useLogin();
   const [currentUser, setCurrentUser] = useState<IUser | null>(null);
-  // const { clearCart } = useContext(WineContext);
-  console.log(currentUser)
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const { loading, error } = useQuery(GET_USER, {
     variables: { getUserByIdId: userLog?.user.id },
@@ -28,10 +27,10 @@ const Header = () => {
       }
     },
   });
-  
 
+  const name = currentUser?.fullname ? currentUser?.fullname : currentUser?.email;
+  
   const handleDeleteLocalStorage = () => {
-    // clearCart();
     setUserLog(null);
   };
 
@@ -47,22 +46,24 @@ const Header = () => {
             alt="Wainsera"
           />
         </a>
-        <nav>
-            <ul className="navbar">
+        <span className="name">Bonjour {name}</span>
+        
+        {/* Bouton Burger */}
+        <button className="burger-button" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+          &#9776;
+        </button>
+
+        {/* Menu avec affichage conditionnel */}
+        <nav className={isMenuOpen ? "navbar active" : "navbar"}>
+            <ul>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/">
+                  <Link className="nav-link" to="/" onClick={() => setIsMenuOpen(false)}>
                     Carte des vins
                   </Link>
                 </li>
-                <li className="nav-item">
-                  <Link className="nav-link" to="/">
-                    A propos
-                  </Link>
-                </li>
-                <li className="nav-item"
-                  onClick={handleDeleteLocalStorage}>
-                  <Link className='nav-link'to="/login">
-                    Deconnexion
+                <li className="nav-item" onClick={() => { handleDeleteLocalStorage(); setIsMenuOpen(false); }}>
+                  <Link className="nav-link" to="/login">
+                    Déconnexion
                   </Link>
                 </li>
               </ul>

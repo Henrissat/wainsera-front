@@ -15,10 +15,26 @@
     color: #fff;
 }
 
+
+.name{
+    font-size: 1.3rem;
+    font-weight: 100;
+    font-style: italic;
+    color: #fff;
+}
+
 .navbar{
     display: flex;
     list-style: none;
     margin-right: 2rem;
+}
+
+.navbar ul{
+    display: flex;
+}
+
+li {
+    border: none;
 }
 
 .navbar li{
@@ -30,4 +46,57 @@
     text-decoration: none !important;
     cursor: pointer;
     transition: all 0.3s ease;
+}
+
+.nav-link:hover{
+    color: rgb(212, 167, 255);
+    cursor: pointer;
+    text-decoration: underline rgb(212, 167, 255);
+}
+
+.burger-button {
+    display: none;
+    background-color: transparent;
+    border: none;
+    font-size: 2rem;
+    color: white;
+    cursor: pointer;
+}
+
+@media (max-width: 844px) {
+  .navbar {
+    position: absolute;
+    top: 80px;
+    left: 0;
+    background-color: #921c1c;
+    flex-direction: column;
+    width: 100%;
+    height: 0;
+    overflow: hidden;
+    transition: height 0.3s ease;
+  }
+
+  .navbar.active {
+    height: auto;
+    padding: 10px;
+  }
+
+  .navbar ul {
+    display: block;
+    list-style: none;
+    padding: 0;
+  }
+
+  .navbar li {
+    margin: 1rem 0;
+    text-align: center;
+  }
+
+  .burger-button {
+    display: block; 
+  }
+
+  .nav-container {
+    position: relative;
+  }
 }
