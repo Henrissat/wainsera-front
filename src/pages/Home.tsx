@@ -1,13 +1,13 @@
 import { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import { useQuery, useMutation } from "@apollo/client";
 import { GET_BOUTEILLE, LIST_BOUTEILLE } from "../graphql/queries/bouteille.query";
+import { DELETE_BOUTEILLE, UPDATE_BOUTEILLE } from "../graphql/mutations/bouteille.mutation";
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
-import './home.css';
 import AddBouteilleForm from "../components/utils/FormAddWine";
 import UpdateBouteilleForm from "../components/utils/FormUpdateWine";
-import { DELETE_BOUTEILLE, UPDATE_BOUTEILLE } from "../graphql/mutations/bouteille.mutation";
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -15,6 +15,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 import { toast } from "react-toastify";
 import { useLogin } from "../context/LoginProvider";
+import './home.css';
 
 interface ICepage {
   nom_cepage?: string;
@@ -57,9 +58,10 @@ interface IBouteille {
 }
 
 function Home() {
+  const navigate = useNavigate();
   const { userLog } = useLogin();
   const userId = userLog?.user.id;
-  
+
   const { loading, error, data, refetch } = useQuery(LIST_BOUTEILLE);
   const [deleteBouteille] = useMutation(DELETE_BOUTEILLE);
   const [updateBouteille] = useMutation(UPDATE_BOUTEILLE);
@@ -151,6 +153,7 @@ function Home() {
 
   const handleRowClick = (id: number) => {
     console.log(`Ligne cliquée avec l'ID: ${id}`);
+    navigate(`/wine/${id}`); 
   };
 
   const handleAddBouteilleSuccess = () => {
