@@ -1,6 +1,7 @@
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { useMutation, useQuery } from "@apollo/client";
-import Select from "react-select";
+import Select, { MultiValue } from "react-select";
+import CreatableSelect from "react-select/creatable";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { ADD_BOUTEILLE } from "../../graphql/mutations/bouteille.mutation";
 import { LIST_VIN } from "../../graphql/queries/vin.query";
@@ -45,7 +46,7 @@ interface ICasier {
 
 interface OptionType {
   value: number;
-  label: string; // Assurez-vous que label est toujours une chaîne de caractères
+  label: string; 
 }
 
 interface IFormInput {
@@ -67,6 +68,27 @@ interface IFormInput {
 interface AddBouteilleFormProps {
   onSuccess: () => void;
 }
+
+interface AccordOptionType {
+  value: string;
+  label: string;
+}
+
+const list_accord: AccordOptionType [] = [
+  { value: "charcuterie", label: "Charcuterie" },
+  { value: "viandes-blanches", label: "Viandes blanches" },
+  { value: "poisson", label: "Poisson" },
+  { value: "fruits-de-mer", label: "Fruits de mer" },
+  { value: "fromages", label: "Fromages" },
+  { value: "viandes-rouges", label: "Viandes rouges" },
+  { value: "gibier", label: "Gibier" },
+  { value: "légumes", label: "Légumes" },
+  { value: "plats-épices", label: "Plats épicés" },
+  { value: "desserts-chocolat", label: "Desserts au chocolat" },
+  { value: "desserts-fruits", label: "Desserts aux fruits" },
+  { value: "plats-en-sauce", label: "Plats en sauce" },
+  { value: "tartes-salees", label: "Tartes salées" },
+];
 
 function AddBouteilleForm({ onSuccess }: AddBouteilleFormProps) {
   const { register, handleSubmit, control, reset } = useForm<IFormInput>();
@@ -226,10 +248,28 @@ function AddBouteilleForm({ onSuccess }: AddBouteilleFormProps) {
           <label>Bouche </label>
           <input {...register("bouche")} type="text" className="input" style={{minWidth: "300px"}}/>
         </div>
-        <div>
+        {/* <div>
           <label>Accord </label>
           <input {...register("accord")} type="text" className="input" style={{minWidth: "300px"}}/>
-        </div>
+        </div> */}
+        <Controller
+            name="accord"
+            control={control}
+            render={({ field }) => (
+              <CreatableSelect
+                isMulti
+                options={list_accord}
+                onChange={(selectedOptions: MultiValue<AccordOptionType> | null) => {
+                  const selectedValues = selectedOptions ? selectedOptions.map(option => option.value).join(', ') : '';
+                  field.onChange(selectedValues); 
+                }}
+                className="input cepage-select"
+                value={field.value
+                  ?.split(', ')
+                  .map((value: string) => ({ value, label: value })) || []}
+              />
+            )}
+          />
       </div>
       <div className="separator-horizontal"></div>
       <div className="form-group">

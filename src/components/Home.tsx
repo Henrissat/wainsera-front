@@ -192,7 +192,7 @@ function Home() {
                     <div className="sml">Quantité</div>
                     <div className="sml col-disabled">Note</div>
                     <div className="xsml xcol-disabled">Apogée</div>
-                    <div></div>
+                    <div className="sml"></div>
                   </li>
                   {groupedByColorAndRegion[color][region].map((b) => {
                     let apogee;
@@ -217,7 +217,7 @@ function Home() {
                           <div className="sml">{b.quantite || "Non spécifiée"}</div>
                           <div className="sml col-disabled">{b.note ? `${b.note}/5` : "Non notée"}</div>
                           <div className="xsml xcol-disabled">{apogee || "Non spécifiée"}</div>
-                          <div className="row-actions">
+                          <div className="sml row-actions">
                             <DeleteOutlineIcon onClick={() => handleDelete(b.id)} />
                             <CreateOutlinedIcon onClick={() => handleUpdate(b.id)} />
                           </div>

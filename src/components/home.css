@@ -139,7 +139,7 @@ button:hover {
 }
 
 .form-group label {
-  margin-right: 10px; 
+  margin-right: 5px; 
 }
 
 .region-select {
@@ -161,33 +161,54 @@ button:hover {
   }
 }
 
-@media (max-width: 800px) {
+@media (max-width: 844px) {
+
+  .row-wine {
+    gap: 10px;
+  }
+
+
   .row-wine div,
   .header-row div {
-    flex: 1 1 80px; 
+    flex: 1 1 auto; 
+    min-width: 0; 
+  }
+  
+
+  .row-wine div:nth-child(1) {
+    flex: 0 0 40%;
+    min-width: 0; 
+  }
+
+  .row-wine div:nth-child(2) {
+    flex: 0 0 15%; 
+    min-width: 0; 
+  }
+
+  .row-wine div:nth-child(3) { 
+    flex: 0 0 15%;
+    min-width: 0; 
+  }
+
+  .row-wine div:last-child { 
+    flex: 0 0 15%;
+    min-width: 20px; 
   }
 
   .col-disabled{
     display: none;
   }
-}
-
-@media (max-width: 600px) {
 
   h1{
     font-size: 65px !important;
   }
 
-  .row-wine div,
-  .header-row div {
-    flex: 1 1 80px; 
-  }
-
-  .row-wine div:last-child, .header-row div:last-child {
-    flex: 0 0 40px;
-  }
-
   .xcol-disabled{
     display: none;
   }
+
+  .sml{
+    max-width: 17%;
+  }
+  
 }
