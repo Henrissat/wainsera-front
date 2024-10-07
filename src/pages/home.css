@@ -2,10 +2,12 @@ h1{
   margin: 3rem 0 0 0 !important;
 }
 
-h2 {
+.list h2 {
   margin: 3rem 0 0 0;
   padding: 0;
+  text-align: center;
 }
+
 h3{
   margin: 15px 0 0 0;
   padding: 0;
